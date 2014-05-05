@@ -26,12 +26,16 @@ void Simulation::Update(unsigned int deltaTime) {
 	}
 }
 
-Unit * Simulation::CreateUnit(Vector3 position, Vector3 velocity, int team) {
-	return new Unit(position, velocity, team);
+Unit * Simulation::CreateUnit(Vector3 position, Vector3 velocity, int team, void *data) {
+	return new Unit(position, velocity, team, data);
 }
 
 void Simulation::AddUnit(Unit *unit) {
 	this->units.push_back(unit);
+}
+
+vector<Unit*> * Simulation::GetAllUnits() {
+	return &globalUnits;
 }
 
 vector<Unit*> * Simulation::GetUnits() {

@@ -13,10 +13,11 @@ class Simulation
 		void Update(unsigned int deltaTime);
 		void Clear();
 
-		Unit * CreateUnit(Vector3 position,  Vector3 velocity, int team);
+		Unit * CreateUnit(Vector3 position,  Vector3 velocity, int team, void *data);
 		void AddUnit(Unit *unit);
 		
 		vector<Unit*> * GetUnits();
+		vector<Unit*> * GetAllUnits();
 
 	private:
 		vector<Unit*> units;

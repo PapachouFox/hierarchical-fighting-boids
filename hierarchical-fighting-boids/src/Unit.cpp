@@ -1,6 +1,6 @@
 #include "Unit.h"
 
-vector<Unit*> globalUnits;
+vector<void*> globalBoids;
 
 Unit::Unit(void)
 {
@@ -9,13 +9,14 @@ Unit::Unit(void)
 	this->team = 0;
 }
 
-Unit::Unit(Vector3 position, Vector3 velocity, int team) 
+Unit::Unit(Vector3 position, Vector3 velocity, int team, void *data) 
 {
 	globalUnits.push_back(this);
 	this->globalPos = globalUnits.size();
 	this->position = position;
 	this->team = team;
 	this->velocity = velocity;
+	this->data = data;
 }
 
 Unit::~Unit(void)
@@ -160,6 +161,10 @@ Vector3 * Unit::GetPosition() {
 
 Vector3 * Unit::GetVelocity() {
 	return &this->velocity;
+}
+
+void * Unit::GetData() {
+	return this->data;
 }
 
 vector<Unit*> Unit::GetUnits() {

@@ -8,7 +8,7 @@ class Unit
 {
 	public:
 		Unit(void);
-		Unit(Vector3 position, Vector3 velocity, int team);
+		Unit(Vector3 position, Vector3 velocity, int team, void *data);
 		~Unit(void);
 		void Update(unsigned int deltaTime);
 		void SetTarget(Unit *target);
@@ -23,6 +23,7 @@ class Unit
 
 		Vector3 * GetPosition();
 		Vector3 * GetVelocity();
+		void * GetData();
 		vector<Unit*> GetUnits();
 
 	public:
@@ -32,5 +33,9 @@ class Unit
 		int globalPos;
 		Unit * target;
 		vector<Unit*> units;
+		void *data;
 };
+
+static vector<Unit*> globalUnits;
+
 
