@@ -19,3 +19,7 @@
 *.exe
 *.out
 *.app
+
+#CMake Stuff
+**/build/*
+**/CMakeLists.txt.user
