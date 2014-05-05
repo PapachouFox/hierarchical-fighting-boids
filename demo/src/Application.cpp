@@ -32,25 +32,25 @@ void Application::init(){
     camera->setFarValue(100.f);
     video::ITexture* text = driver->getTexture("../textures/ESO_-_Milky_Way_Bottom.bmp");
     scene::ISceneNode* skybox = smgr->addSkyBoxSceneNode(text,text,text,text,text,text);
-    Boid* myBoid = new Boid(smgr);
 }
+
+#include <iostream>
+#include <time.h>
 
 bool Application::run(){
     if(!device){
         return false;
     }
 
-    /*
-    Boid monBoid;
-    Boid monBoid2;
-
     Simulation sim;
-    sim.init({params});
+    sim.Init();
 
-    Unit* unit = sim.createUnit(&monBoid);
-    sim.addUnit(unit);
-    unit.addUnit(sim.createUnit(&monBoid2));
-    */
+    std::vector<Boid*> boids;
+    for(int i = 0; i < 200; i++){
+        Boid* monBoid = new Boid(smgr);
+        boids.push_back(monBoid);
+        sim.AddUnit(sim.CreateUnit(Vector3(rand()%100, rand()%100, 0), Vector3(1, 0, 0), 0, monBoid));
+    }
 
     ITimer* irrTimer = device->getTimer();
     u32 TimeStamp = irrTimer->getTime(), DeltaTime = 0;
@@ -58,22 +58,21 @@ bool Application::run(){
         DeltaTime = irrTimer->getTime() - TimeStamp;
         TimeStamp = irrTimer->getTime();
 
-        /*
-        sim.update(DeltaTime);
-
-        vector<Unit> unitList = sim.getSimulationData();
-        Boid* b = ((Boid*)(unitList[0].data));
-        b->setPosition(unitList[0].position);
-        if(b->getPosition().x > 100){
-            b->drop();
-        }*/
+        sim.Update(DeltaTime);
+        vector<Unit*>* list = sim.GetAllUnits();
+        for(unsigned int i = 0; i < list->size(); i++){
+            Vector3 pos = list->at(i)->GetPosition();
+            ((Boid*)list->at(i)->GetData())->setPosition(core::vector3df(pos.X, pos.Y, pos.Z));
+        }
 
         driver->beginScene();
         smgr->drawAll();
         driver->endScene();
     }
 
-    //sim.drop();
-
+    for(unsigned int i = 0; i < boids.size(); i++){
+        delete boids[i];
+    }
+    sim.Clear();
     return true;
 }

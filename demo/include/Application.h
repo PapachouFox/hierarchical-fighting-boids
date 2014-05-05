@@ -1,6 +1,8 @@
 #pragma once
 #include <irrlicht/irrlicht.h>
 #include "Boid.h"
+#include "Simulation.h"
+
 using namespace irr;
 
 enum GAME_STATE{

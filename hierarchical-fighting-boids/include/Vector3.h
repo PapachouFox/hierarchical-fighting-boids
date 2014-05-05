@@ -25,9 +25,8 @@ class Vector3
 		Vector3 operator/(float f);
 		Vector3 operator/=(float f);
 
-	private:
-		float X;
-		float Y;
-		float Z;
+        float X;
+        float Y;
+        float Z;
 };
 

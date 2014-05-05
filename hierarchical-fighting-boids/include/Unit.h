@@ -27,6 +27,7 @@ class Unit
 		vector<Unit*> GetUnits();
 
 	public:
+        static vector<Unit*> globalUnits;
 		Vector3 position;
 		Vector3 velocity;
 		int team;
@@ -34,7 +35,4 @@ class Unit
 		vector<Unit*> units;
 		void *data;
 };
-
-static vector<Unit*> globalUnits;
-
 

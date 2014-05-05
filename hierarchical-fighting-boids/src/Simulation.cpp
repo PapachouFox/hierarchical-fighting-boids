@@ -36,7 +36,7 @@ void Simulation::AddUnit(Unit *unit) {
 }
 
 vector<Unit*> * Simulation::GetAllUnits() {
-	return &globalUnits;
+    return &Unit::globalUnits;
 }
 
 vector<Unit*> * Simulation::GetUnits() {

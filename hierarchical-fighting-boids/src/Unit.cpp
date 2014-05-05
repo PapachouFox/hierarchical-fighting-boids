@@ -1,6 +1,7 @@
 #include "Unit.h"
 
 vector<void*> globalBoids;
+vector<Unit*> Unit::globalUnits;
 
 Unit::Unit(void)
 {
@@ -54,8 +55,7 @@ void Unit::Update(unsigned int deltaTime) {
 	Vector3 v3 = Rule3();
 
 	this->velocity = this->velocity + v1 + v2 + v3;
-	this->position += this->velocity;
-
+    this->position = this->position + this->velocity;
 	/*for(unsigned int i=0; i<this->units.size(); i++) {
 		this->units[i]->Update(deltaTime);
 	}*/

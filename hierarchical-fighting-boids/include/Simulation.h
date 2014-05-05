@@ -17,7 +17,7 @@ class Simulation
 		void AddUnit(Unit *unit);
 		
 		vector<Unit*> * GetUnits();
-		vector<Unit*> * GetAllUnits();
+        vector<Unit*> * GetAllUnits();
 
 	private:
 		vector<Unit*> units;
