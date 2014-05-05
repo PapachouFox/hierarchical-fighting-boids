@@ -5,14 +5,12 @@ vector<void*> globalBoids;
 Unit::Unit(void)
 {
 	globalUnits.push_back(this);
-	this->globalPos = globalUnits.size();
 	this->team = 0;
 }
 
 Unit::Unit(Vector3 position, Vector3 velocity, int team, void *data) 
 {
 	globalUnits.push_back(this);
-	this->globalPos = globalUnits.size();
 	this->position = position;
 	this->team = team;
 	this->velocity = velocity;
@@ -23,9 +21,15 @@ Unit::~Unit(void)
 {
 	for(unsigned int i=0; i<this->units.size(); i++) {
 		delete this->units[i];
+		this->units.erase(this->units.begin() + i);
 	}
 
-	globalUnits.erase(globalUnits.begin() + this->globalPos);
+	for(unsigned int j=0; j<globalUnits.size(); j++) {
+		if(this == globalUnits[j]) {			
+			globalUnits.erase(globalUnits.begin() + j);
+			break;
+		}
+	}
 }
 
 void Unit::Update(unsigned int deltaTime) {
@@ -74,7 +78,7 @@ Vector3 Unit::Rule1() {
 
 	Vector3 pcenter;
 	for(unsigned int i=0; i<globalUnits.size(); i++) {
-		if(i != this->globalPos) {
+		if(this != globalUnits[i]) {
 			pcenter += *globalUnits[i]->GetPosition();
 		}
 	}
@@ -102,7 +106,7 @@ Vector3 Unit::Rule2() {
 	END PROCEDURE*/
 	Vector3 c;
 	for(unsigned int i=0; i<globalUnits.size(); i++) {
-		if(i != this->globalPos) {
+		if(this != globalUnits[i]) {
 			if(this->position.Distance(globalUnits[i]->GetPosition()) < 100) {
 				c -= (*globalUnits[i]->GetPosition() - this->position);
 			}
@@ -127,7 +131,7 @@ Vector3 Unit::Rule3() {
 	END PROCEDURE*/
 	Vector3 pvelocity;
 	for(unsigned int i=0; i<globalUnits.size(); i++) {
-		if(i != this->globalPos) {
+		if(this != globalUnits[i]) {
 			pvelocity += *globalUnits[i]->GetVelocity();
 		}
 	}

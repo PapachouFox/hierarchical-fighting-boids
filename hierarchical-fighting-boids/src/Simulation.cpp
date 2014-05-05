@@ -9,6 +9,7 @@ Simulation::~Simulation(void)
 {
 	for(unsigned int i=0; i<this->units.size(); i++) {
 		delete this->units[i];
+		this->units.erase(this->units.begin() + i);
 	}
 }
 

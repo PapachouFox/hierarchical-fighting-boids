@@ -30,7 +30,6 @@ class Unit
 		Vector3 position;
 		Vector3 velocity;
 		int team;
-		int globalPos;
 		Unit * target;
 		vector<Unit*> units;
 		void *data;
