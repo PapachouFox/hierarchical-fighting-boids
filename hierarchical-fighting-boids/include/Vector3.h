@@ -1,4 +1,6 @@
 #pragma once
+#include <math.h>
+
 class Vector3
 {
 	public:
@@ -9,11 +11,18 @@ class Vector3
 		Vector3(int X, int Y, int Z);
 		~Vector3(void);
 
+		float Distance(Vector3 *v);
+		float Length();
+		Vector3 Normalize();
+
 		Vector3 operator+(Vector3 v);
 		Vector3 operator+=(Vector3 v);
 		Vector3 operator-(Vector3 v);
+		Vector3 operator-=(Vector3 v);
 		Vector3 operator*(Vector3 v);
 		Vector3 operator*(float f);
+		Vector3 operator/(float f);
+		Vector3 operator/=(float f);
 
 	private:
 		float X;

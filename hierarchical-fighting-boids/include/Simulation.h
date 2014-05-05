@@ -9,8 +9,17 @@ class Simulation
 	public:
 		Simulation(void);
 		~Simulation(void);
-		void Update();
-		void GetSimulationData(vector<Unit>& boidsList);
+		void Init();
+		void Update(unsigned int deltaTime);
+		void Clear();
+
+		Unit * CreateUnit(Vector3 position,  Vector3 velocity, int team);
+		void AddUnit(Unit *unit);
+		
+		vector<Unit*> * GetUnits();
+
+	private:
+		vector<Unit*> units;
 
 };
 
