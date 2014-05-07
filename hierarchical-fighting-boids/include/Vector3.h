@@ -17,9 +17,9 @@ class Vector3
 		Vector3 Normalize();
 
 		Vector3 operator+(Vector3 v);
-		Vector3 operator+=(Vector3 v);
 		Vector3 operator-(Vector3 v);
-		Vector3 operator-=(Vector3 v);
+		void operator+=(const Vector3 &v);
+		void operator-=(Vector3 v);
 		Vector3 operator*(Vector3 v);
 		Vector3 operator*(float f);
 		Vector3 operator/(float f);

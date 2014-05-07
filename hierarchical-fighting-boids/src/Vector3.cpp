@@ -74,16 +74,20 @@ Vector3 Vector3::operator+(Vector3 v) {
 	return Vector3(this->X + v.X, this->Y + v.Y, this->Z + v.Z);
 }
 
-Vector3 Vector3::operator+=(Vector3 v) {
-	return Vector3(this->X + v.X, this->Y + v.Y, this->Z + v.Z);
-}
-
 Vector3 Vector3::operator-(Vector3 v) {
 	return Vector3(this->X - v.X, this->Y - v.Y, this->Z - v.Z);
 }
 
-Vector3 Vector3::operator-=(Vector3 v) {
-	return Vector3(this->X - v.X, this->Y - v.Y, this->Z - v.Z);
+void Vector3::operator+=(const Vector3 &v) {
+	this->X += v.X;
+	this->Y += v.Y;
+	this->Z += v.Z;
+}
+
+void Vector3::operator-=(Vector3 v) {
+	this->X -= v.X;
+	this->Y -= v.Y;
+	this->Z -= v.Z;
 }
 
 Vector3 Vector3::operator*(Vector3 v) {

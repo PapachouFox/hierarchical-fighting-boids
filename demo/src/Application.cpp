@@ -46,14 +46,15 @@ bool Application::run(){
     sim.Init();
 
     std::vector<Boid*> boids;
-    for(int i = 0; i < 200; i++){
+    for(int i = 0; i < 10; i++){
         Boid* monBoid = new Boid(smgr);
         boids.push_back(monBoid);
-        sim.AddUnit(sim.CreateUnit(Vector3(rand()%100, rand()%100, 0), Vector3(1, 0, 0), 0, monBoid));
+        sim.AddUnit(sim.CreateUnit(Vector3(rand()%20, rand()%20, 0), Vector3(1, 0, 0), 0, monBoid));
     }
 
     ITimer* irrTimer = device->getTimer();
-    u32 TimeStamp = irrTimer->getTime(), DeltaTime = 0;
+    u32 TimeStamp = irrTimer->getTime();
+	float DeltaTime = 0;
     while(device->run()){
         DeltaTime = irrTimer->getTime() - TimeStamp;
         TimeStamp = irrTimer->getTime();

@@ -21,7 +21,7 @@ void Simulation::Clear() {
 
 }
 
-void Simulation::Update(unsigned int deltaTime) {
+void Simulation::Update(float deltaTime) {
 	for(unsigned int i=0; i<this->units.size(); i++) {
 		this->units[i]->Update(deltaTime);
 	}

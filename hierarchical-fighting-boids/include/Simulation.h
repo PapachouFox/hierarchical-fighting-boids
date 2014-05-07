@@ -10,7 +10,7 @@ class Simulation
 		Simulation(void);
 		~Simulation(void);
 		void Init();
-		void Update(unsigned int deltaTime);
+		void Update(float deltaTime);
 		void Clear();
 
 		Unit * CreateUnit(Vector3 position,  Vector3 velocity, int team, void *data);
