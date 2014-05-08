@@ -13,7 +13,7 @@ class Simulation
 		void Update(float deltaTime);
 		void Clear();
 
-		Unit * CreateUnit(Vector3 position,  Vector3 velocity, int team, void *data);
+		Unit * CreateUnit(Vector3 position,  Vector3 velocity, Unit * unit, int team, void *data);
 		void AddUnit(Unit *unit);
 		
 		vector<Unit*> * GetUnits();

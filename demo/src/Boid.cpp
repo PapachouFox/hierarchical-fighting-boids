@@ -1,9 +1,9 @@
 #include "Boid.h"
 #include <iostream>
 
-Boid::Boid(irr::scene::ISceneManager* pSmgr){
+Boid::Boid(irr::scene::ISceneManager* pSmgr, float size){
     this->mSmgr = pSmgr;
-    this->mCube = this->mSmgr->addCubeSceneNode(1.f);
+    this->mCube = this->mSmgr->addCubeSceneNode(size);
 }
 
 Boid::~Boid(){

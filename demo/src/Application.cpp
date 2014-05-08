@@ -46,8 +46,9 @@ bool Application::run(){
     sim.Init();
 
     std::vector<Boid*> boids;
-	this->CreateBoids(150, &boids, &sim, Vector3(0.f, 0.f, 0.f));	
-	this->CreateBoids(50, &boids, &sim, Vector3(40.f, 0.f, 0.f));
+	this->CreateBoids(1, 20, 3, NULL, &boids, &sim, Vector3(0.f, 0.f, 0.f));
+	/*this->CreateBoids(150, &boids, &sim, Vector3(0.f, 0.f, 0.f));	
+	this->CreateBoids(50, &boids, &sim, Vector3(40.f, 0.f, 0.f));*/
 
     ITimer* irrTimer = device->getTimer();
     u32 TimeStamp = irrTimer->getTime();
@@ -75,13 +76,24 @@ bool Application::run(){
     return true;
 }
 
-void Application::CreateBoids(int number, std::vector<Boid*> *boids, Simulation *sim, Vector3 position) {
+void Application::CreateBoids(int number, int numberSubUnit, float size, Unit * leader, std::vector<Boid*> *boids, Simulation *sim, Vector3 position) {
 	for(int i = 0; i < number; i++){
-        Boid* monBoid = new Boid(smgr);
+        Boid* monBoid = new Boid(smgr, size);
         boids->push_back(monBoid);
 		float t1 = (rand()%10 > 5) ? -1.f : 1.f;
 		float t2 = (rand()%10 > 5) ? -1.f : 1.f;
 		float t3 = (rand()%10 > 5) ? -1.f : 1.f;
-		sim->AddUnit(sim->CreateUnit(position, Vector3((float)((double)rand() / (RAND_MAX)) * t1, (float)((double)rand() / (RAND_MAX)) * t2, (float)((double)rand() / (RAND_MAX)) * t3), 0, monBoid));
+
+		float x = (float)((double)rand() / (RAND_MAX) + 2) * t1;
+		float y = (float)((double)rand() / (RAND_MAX) + 2) * t2;
+		float z = 0.f;
+
+		Unit * unit = sim->CreateUnit(position, Vector3(x, y, z), leader, 0, monBoid);		
+		sim->AddUnit(unit);
+		if(leader != NULL)
+			leader->AddUnit(unit);
+
+		if(numberSubUnit > 0)
+			this->CreateBoids(numberSubUnit, 0, 1, unit, boids, sim, Vector3(x, y, z));
     }
 }

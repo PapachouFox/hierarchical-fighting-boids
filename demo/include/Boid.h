@@ -3,7 +3,7 @@
 
 class Boid{
 public:
-    Boid(irr::scene::ISceneManager* pSmgr);
+    Boid(irr::scene::ISceneManager* pSmgr, float size);
     ~Boid();
     void setPosition(const irr::core::vector3df &pNewpos);
     void setOrientation(const irr::core::vector2df &pNeworientation);

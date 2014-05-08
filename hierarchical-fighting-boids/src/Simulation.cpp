@@ -27,8 +27,8 @@ void Simulation::Update(float deltaTime) {
 	}
 }
 
-Unit * Simulation::CreateUnit(Vector3 position, Vector3 velocity, int team, void *data) {
-	return new Unit(position, velocity, team, data);
+Unit * Simulation::CreateUnit(Vector3 position, Vector3 velocity, Unit * unit, int team, void *data) {
+	return new Unit(position, velocity, unit, team, data);
 }
 
 void Simulation::AddUnit(Unit *unit) {
