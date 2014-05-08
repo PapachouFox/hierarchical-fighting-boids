@@ -46,21 +46,21 @@ bool Application::run(){
     sim.Init();
 
     std::vector<Boid*> boids;
-	this->CreateBoids(3, 20, 3, NULL, &boids, &sim, Vector3(0.f, 0.f, 0.f));
+	this->CreateBoids(10, 50, 3, NULL, &boids, &sim, Vector3(0.f, 0.f, 0.f));
 	/*this->CreateBoids(150, &boids, &sim, Vector3(0.f, 0.f, 0.f));	
 	this->CreateBoids(50, &boids, &sim, Vector3(40.f, 0.f, 0.f));*/
 
     ITimer* irrTimer = device->getTimer();
     u32 TimeStamp = irrTimer->getTime();
-	float DeltaTime = 0;
+	irr::u32 DeltaTime = 0;
     while(device->run()){
         DeltaTime = irrTimer->getTime() - TimeStamp;
         TimeStamp = irrTimer->getTime();
 
-        sim.Update(DeltaTime);
+        sim.Update((float)DeltaTime);
         vector<Unit*>* list = sim.GetAllUnits();
         for(unsigned int i = 0; i < list->size(); i++){
-            Vector3 pos = list->at(i)->GetPosition();
+			Vector3 pos = list->at(i)->position;
             ((Boid*)list->at(i)->GetData())->setPosition(core::vector3df(pos.X, pos.Y, pos.Z));
         }
 

@@ -14,13 +14,6 @@ Vector3::Vector3(Vector3 *v)
 	this->Z = v->Z;
 }
 
-Vector3::Vector3(Vector3 &v) 
-{
-	this->X = v.X;
-	this->Y = v.Y;
-	this->Z = v.Z;
-}
-
 Vector3::Vector3(const Vector3 &v){
     this->X = v.X;
     this->Y = v.Y;
@@ -49,8 +42,8 @@ Vector3::~Vector3(void)
 * Compute the Euclidian distance between two Vector3->
 * Distance is sqrt((v1->X - v2->X)² + (v1->Y - v2->Y)²)
 */
-float Vector3::Distance(Vector3 *v) {
-	return sqrt((float)(this->X - v->X)*(this->X - v->X) + (this->Y - v->Y) * (this->Y - v->Y) + (this->Z - v->Z) * (this->Z - v->Z));
+float Vector3::Distance(const Vector3 &v) {
+	return sqrt((float)(this->X - v.X)*(this->X - v.X) + (this->Y - v.Y) * (this->Y - v.Y) + (this->Z - v.Z) * (this->Z - v.Z));
 }
 
 /*

@@ -20,20 +20,19 @@ class Unit
 		Vector3 Separation(vector<Unit*> flock);
 		Vector3 Alignment(vector<Unit*> flock);
 		Vector3 Cohesion(vector<Unit*> flock);
-		Vector3 Seek(Vector3 target);
+		Vector3 Seek(Vector3& target);
 		
-		vector<Unit*> GetUnits();
-		Vector3 * GetPosition();
 		Vector3 * GetVelocity();
+		vector<Unit*> GetUnits();
 		void AddUnit(Unit *unit);
 		void * GetData();
 
-	public:
-        static vector<Unit*> globalUnits;		
+		Vector3 position;
+		static vector<Unit*> globalUnits;
+	private:
 		vector<Unit*> units;
 		Unit * leader;
 
-		Vector3 position;
 		Vector3 velocity;
 		Vector3 acceleration;
 

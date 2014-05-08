@@ -53,7 +53,7 @@ void Unit::Update(float deltaTime) {
 		this->ApplyForce(this->Seek(this->target));
 	} else {
 		this->Flock(this->leader->GetUnits(), deltaTime);
-		this->ApplyForce(this->Seek(this->leader->GetPosition()) * 3.0f);
+		this->ApplyForce(this->Seek(this->leader->position) * 3.0f);
 	}			
 	this->Move(deltaTime);
 	//this->Border();
@@ -78,7 +78,7 @@ void Unit::ApplyForce(Vector3 force) {
 }
 
 void Unit::Move(float deltaTime) {
-	this->velocity += this->acceleration ;
+	this->velocity += this->acceleration;
 	this->velocity.Limit(this->maxSpeed);
 	this->position += this->velocity * deltaTime / 500;
 	this->acceleration *= 0;
@@ -90,9 +90,9 @@ Vector3 Unit::Separation(vector<Unit*> flock) {
 	int count = 0;
 
 	for(unsigned int i=0; i<flock.size(); i++) {
-		float d = this->position.Distance(flock[i]->GetPosition());
+		float d = this->position.Distance(flock[i]->position);
 		if((d > 0) && (d < desiredSeparation)) {
-			Vector3 diff = this->position - flock[i]->GetPosition();
+			Vector3 diff = this->position - flock[i]->position;
 			diff.Normalize();
 			diff /= d;
 			steer += diff;
@@ -101,9 +101,9 @@ Vector3 Unit::Separation(vector<Unit*> flock) {
 	}
 
 	if(this->leader != NULL) {
-		float d = this->position.Distance(this->leader->GetPosition());
+		float d = this->position.Distance(this->leader->position);
 		if((d > 0) && (d < desiredSeparation)) {
-			Vector3 diff = this->position - this->leader->GetPosition();
+			Vector3 diff = this->position - this->leader->position;
 			diff.Normalize();
 			diff /= d;
 			steer += diff;
@@ -131,7 +131,7 @@ Vector3 Unit::Alignment(vector<Unit*> flock) {
 	int count = 0;
 
 	for(unsigned int i=0; i<flock.size(); i++) {
-		float d = this->position.Distance(flock[i]->GetPosition());
+		float d = this->position.Distance(flock[i]->position);
 		if((d > 0) && (d < neighborDistance)) {
 			alignment += flock[i]->GetVelocity();
 			count++;
@@ -139,7 +139,7 @@ Vector3 Unit::Alignment(vector<Unit*> flock) {
 	}
 
 	if(this->leader != NULL) {
-		float d = this->position.Distance(this->leader->GetPosition());
+		float d = this->position.Distance(this->leader->position);
 		if((d > 0) && (d < neighborDistance)) {
 			alignment += this->leader->GetVelocity();
 			count++;
@@ -167,17 +167,17 @@ Vector3 Unit::Cohesion(vector<Unit*> flock) {
 	int count = 0;
 
 	for(unsigned int i=0; i<flock.size(); i++) {
-		float d = this->position.Distance(flock[i]->GetPosition());
+		float d = this->position.Distance(flock[i]->position);
 		if((d > 0) && (d < neighborDistance)) {
-			cohesion += flock[i]->GetPosition();
+			cohesion += flock[i]->position;
 			count++;
 		}
 	}
 
 	if(this->leader != NULL) {
-		float d = this->position.Distance(this->leader->GetPosition());
+		float d = this->position.Distance(this->leader->position);
 		if((d > 0) && (d < neighborDistance)) {
-			cohesion += this->leader->GetPosition();
+			cohesion += this->leader->position;
 			count++;
 		}
 	}
@@ -191,7 +191,7 @@ Vector3 Unit::Cohesion(vector<Unit*> flock) {
 	}
 }
 
-Vector3 Unit::Seek(Vector3 target) {
+Vector3 Unit::Seek(Vector3& target) {
 	Vector3 desired = target - this->position;
 	desired.Normalize();
 	desired *= this->maxSpeed;
@@ -202,17 +202,18 @@ Vector3 Unit::Seek(Vector3 target) {
 }
 
 void Unit::Border() {
-	if(this->position.X < -50) this->position.X = 50;
-	if(this->position.Y < -50) this->position.Y = 50;
-	if(this->position.Z < -50) this->position.Z = 50;
-	if(this->position.X > 50) this->position.X = -50;
-	if(this->position.Y > 50) this->position.Y = -50;
-	if(this->position.Z > 50) this->position.Z = -50;
+	if(this->position.X < -50) this->position.X = -50;
+	if(this->position.Y < -50) this->position.Y = -50;
+	if(this->position.Z < -50) this->position.Z = -50;
+	if(this->position.X > 50) this->position.X = 50;
+	if(this->position.Y > 50) this->position.Y = 50;
+	if(this->position.Z > 50) this->position.Z = 50;
 }
 
-Vector3 * Unit::GetPosition() {
-	return &this->position;
-}
+/*
+Vector3 Unit::GetPosition() {
+	return this->position;
+}*/
 
 Vector3 * Unit::GetVelocity() {
 	return &this->velocity;
