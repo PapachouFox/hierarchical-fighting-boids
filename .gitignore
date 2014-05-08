@@ -20,6 +20,13 @@
 *.out
 *.app
 
+#VS Stuff
+**/*.vcxproj.user
+**/*.suo
+**/*.sdf
+**/*.opensdf
+**/Debug/*
+
 #CMake Stuff
 **/build/*
 **/CMakeLists.txt.user

@@ -46,7 +46,7 @@ bool Application::run(){
     sim.Init();
 
     std::vector<Boid*> boids;
-	this->CreateBoids(1, 20, 3, NULL, &boids, &sim, Vector3(0.f, 0.f, 0.f));
+	this->CreateBoids(3, 20, 3, NULL, &boids, &sim, Vector3(0.f, 0.f, 0.f));
 	/*this->CreateBoids(150, &boids, &sim, Vector3(0.f, 0.f, 0.f));	
 	this->CreateBoids(50, &boids, &sim, Vector3(40.f, 0.f, 0.f));*/
 
@@ -78,7 +78,7 @@ bool Application::run(){
 
 void Application::CreateBoids(int number, int numberSubUnit, float size, Unit * leader, std::vector<Boid*> *boids, Simulation *sim, Vector3 position) {
 	for(int i = 0; i < number; i++){
-        Boid* monBoid = new Boid(smgr, size);
+        Boid* monBoid = new Boid(smgr, size); 
         boids->push_back(monBoid);
 		float t1 = (rand()%10 > 5) ? -1.f : 1.f;
 		float t2 = (rand()%10 > 5) ? -1.f : 1.f;
