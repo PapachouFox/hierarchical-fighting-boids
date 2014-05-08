@@ -16,6 +16,7 @@ public:
   Application();
   ~Application();
   bool run();
+  void CreateBoids(int number, std::vector<Boid*> *boids, Simulation *sim, Vector3 position);
 
 private:
   GAME_STATE state;

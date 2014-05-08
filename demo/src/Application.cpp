@@ -26,10 +26,10 @@ Application::~Application(){
 }
 
 void Application::init(){
-    scene::ICameraSceneNode* camera = smgr->addCameraSceneNodeFPS(0, 20.0f, 0.01f);
+    scene::ICameraSceneNode* camera = smgr->addCameraSceneNodeFPS(0, 30.0f, 0.05f);
     camera->setTarget(core::vector3df(0., 0., 0.));
-    camera->setPosition(core::vector3df(0., 0., -20.));
-    camera->setFarValue(100.f);
+    camera->setPosition(core::vector3df(0., 0., -70.));
+    camera->setFarValue(300.f);
     video::ITexture* text = driver->getTexture("../textures/ESO_-_Milky_Way_Bottom.bmp");
     scene::ISceneNode* skybox = smgr->addSkyBoxSceneNode(text,text,text,text,text,text);
 }
@@ -46,11 +46,8 @@ bool Application::run(){
     sim.Init();
 
     std::vector<Boid*> boids;
-    for(int i = 0; i < 10; i++){
-        Boid* monBoid = new Boid(smgr);
-        boids.push_back(monBoid);
-        sim.AddUnit(sim.CreateUnit(Vector3(rand()%20, rand()%20, 0), Vector3(1, 0, 0), 0, monBoid));
-    }
+	this->CreateBoids(150, &boids, &sim, Vector3(0.f, 0.f, 0.f));	
+	this->CreateBoids(50, &boids, &sim, Vector3(40.f, 0.f, 0.f));
 
     ITimer* irrTimer = device->getTimer();
     u32 TimeStamp = irrTimer->getTime();
@@ -76,4 +73,15 @@ bool Application::run(){
     }
     sim.Clear();
     return true;
+}
+
+void Application::CreateBoids(int number, std::vector<Boid*> *boids, Simulation *sim, Vector3 position) {
+	for(int i = 0; i < number; i++){
+        Boid* monBoid = new Boid(smgr);
+        boids->push_back(monBoid);
+		float t1 = (rand()%10 > 5) ? -1.f : 1.f;
+		float t2 = (rand()%10 > 5) ? -1.f : 1.f;
+		float t3 = (rand()%10 > 5) ? -1.f : 1.f;
+		sim->AddUnit(sim->CreateUnit(position, Vector3((float)((double)rand() / (RAND_MAX)) * t1, (float)((double)rand() / (RAND_MAX)) * t2, (float)((double)rand() / (RAND_MAX)) * t3), 0, monBoid));
+    }
 }

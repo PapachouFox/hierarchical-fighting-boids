@@ -16,6 +16,8 @@ Unit::Unit(Vector3 position, Vector3 velocity, int team, void *data)
 	this->team = team;
 	this->velocity = velocity;
 	this->data = data;
+	this->maxSpeed = 5;
+	this->maxSteeringForce = 0.05f;
 }
 
 Unit::~Unit(void)
@@ -34,28 +36,135 @@ Unit::~Unit(void)
 }
 
 void Unit::Update(float deltaTime) {
-	this->position = this->position + this->velocity * deltaTime / 500;
+	this->Flock(deltaTime);
+	//this->ApplyForce(this->Seek(Vector3(0.f, 0.f, 0.f)));
+	this->Move(deltaTime);
+	//this->Border();
 }
 
-void Unit::SetTarget(Unit *target) {
-	this->target = target;
+void Unit::Flock(float deltaTime) {
+	Vector3 separation = this->Separation();
+	Vector3 alignment = this->Alignment();
+	Vector3 cohesion = this->Cohesion();
+
+	separation *= 5.0f;
+	alignment *= 0.8f;
+	cohesion *= 1.0f;
+
+	this->ApplyForce(separation);
+	this->ApplyForce(alignment);
+	this->ApplyForce(cohesion);
 }
 
-void Unit::SetVelocity(Vector3 velocity) {
-	this->velocity = velocity;
+void Unit::ApplyForce(Vector3 force) {
+	this->acceleration += force;
 }
 
-void Unit::AddUnit(Unit *unit) {
-	this->units.push_back(unit);
+void Unit::Move(float deltaTime) {
+	this->velocity += this->acceleration ;
+	this->velocity.Limit(this->maxSpeed);
+	this->position += this->velocity * deltaTime / 500;
+	this->acceleration *= 0;
 }
 
-void Unit::RemoveUnit() {
-	//this->units.pop_back();
+Vector3 Unit::Separation() {
+	float desiredSeparation = 2.0f;
+	Vector3 steer;
+	int count = 0;
+
+	for(unsigned int i=0; i<globalUnits.size(); i++) {
+		float d = this->position.Distance(globalUnits[i]->GetPosition());
+		if((d > 0) && (d < desiredSeparation)) {
+			Vector3 diff = this->position - globalUnits[i]->GetPosition();
+			diff.Normalize();
+			diff /= d;
+			steer += diff;
+			count++;
+		}
+	}
+
+	if(count > 0) {
+		steer /= (float)count;
+	}
+
+	if(steer.Length() > 0) {
+		steer.Normalize();
+		steer *= this->maxSpeed;
+		steer -= this->velocity;
+		steer.Limit(this->maxSteeringForce);
+	}
+
+	return steer;
 }
 
-//void Unit::SetPosition(Vector3 position) {
-//	this->position = position;
-//}
+Vector3 Unit::Alignment() {
+	float neighborDistance = 8.f;
+	Vector3 alignment;
+	int count = 0;
+
+	for(unsigned int i=0; i<globalUnits.size(); i++) {
+		float d = this->position.Distance(globalUnits[i]->GetPosition());
+		if((d > 0) && (d < neighborDistance)) {
+			alignment += globalUnits[i]->GetVelocity();
+			count++;
+		}
+	}
+
+	if(count > 0) {
+		alignment /= (float)count;
+		alignment.Normalize();
+		alignment *= this->maxSpeed;
+		Vector3 steer = alignment - this->velocity;
+		steer.Limit(this->maxSteeringForce);
+		return steer;
+	} else {
+		Vector3 v;
+		return v;
+	}
+
+	return alignment;
+}
+
+Vector3 Unit::Cohesion() {
+	float neighborDistance = 20.f;
+	Vector3 cohesion;
+	int count = 0;
+
+	for(unsigned int i=0; i<globalUnits.size(); i++) {
+		float d = this->position.Distance(globalUnits[i]->GetPosition());
+		if((d > 0) && (d < neighborDistance)) {
+			cohesion += globalUnits[i]->GetPosition();
+			count++;
+		}
+	}
+
+	if(count > 0) {
+		cohesion /= (float)count;
+		return this->Seek(cohesion);
+	} else {
+		Vector3 v;
+		return v;
+	}
+}
+
+Vector3 Unit::Seek(Vector3 target) {
+	Vector3 desired = target - this->position;
+	desired.Normalize();
+	desired *= this->maxSpeed;
+
+	Vector3 steer = desired - this->velocity;
+	steer.Limit(this->maxSteeringForce);
+	return steer;
+}
+
+void Unit::Border() {
+	if(this->position.X < -50) this->position.X = 50;
+	if(this->position.Y < -50) this->position.Y = 50;
+	if(this->position.Z < -50) this->position.Z = 50;
+	if(this->position.X > 50) this->position.X = -50;
+	if(this->position.Y > 50) this->position.Y = -50;
+	if(this->position.Z > 50) this->position.Z = -50;
+}
 
 Vector3 * Unit::GetPosition() {
 	return &this->position;

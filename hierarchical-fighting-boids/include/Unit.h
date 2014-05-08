@@ -10,24 +10,36 @@ class Unit
 		Unit(void);
 		Unit(Vector3 position, Vector3 velocity, int team, void *data);
 		~Unit(void);
-		void Update(float deltaTime);
-		void SetTarget(Unit *target);
-		void AddUnit(Unit *unit);
-		void RemoveUnit();
-		void SetVelocity(Vector3 velocity);
 
+		void Update(float deltaTime);
+		void Flock(float deltaTime);
+		void Move(float deltaTime);
+		void Border();		
+		void ApplyForce(Vector3 force);
+
+		Vector3 Separation();
+		Vector3 Alignment();
+		Vector3 Cohesion();
+		Vector3 Seek(Vector3 target);
+
+		
+		vector<Unit*> GetUnits();
 		Vector3 * GetPosition();
 		Vector3 * GetVelocity();
 		void * GetData();
-		vector<Unit*> GetUnits();
 
 	public:
-        static vector<Unit*> globalUnits;
+        static vector<Unit*> globalUnits;		
+		vector<Unit*> units;
+
 		Vector3 position;
 		Vector3 velocity;
+		Vector3 acceleration;
+
+		float maxSteeringForce;
+		float maxSpeed;
+
 		int team;
-		Unit * target;
-		vector<Unit*> units;
 		void *data;
 };
 

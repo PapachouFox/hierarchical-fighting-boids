@@ -65,9 +65,21 @@ float Vector3::Length(){
 * Normalize a vector
 * Vector3(X/Length, Y/Length)
 */
-Vector3 Vector3::Normalize(){
+void Vector3::Normalize(){
     float length = this->Length();
-    return Vector3(this->X/length, this->Y/length, this->Z/length);
+    this->X /= length;
+	this->Y /= length;
+	this->Z /= length;
+}
+
+
+void Vector3::Limit(float limit) {
+	if(this->X >= limit) this->X = limit;	
+	if(this->Y >= limit) this->Y = limit;
+	if(this->Z >= limit) this->Z = limit;
+	if(this->X <= -limit) this->X = -limit;	
+	if(this->Y <= -limit) this->Y = -limit;
+	if(this->Z <= -limit) this->Z = -limit;
 }
 
 Vector3 Vector3::operator+(Vector3 v) {
@@ -84,10 +96,46 @@ void Vector3::operator+=(const Vector3 &v) {
 	this->Z += v.Z;
 }
 
-void Vector3::operator-=(Vector3 v) {
+void Vector3::operator+=(float f) {
+	this->X += f;
+	this->Y += f;
+	this->Z += f;
+}
+
+void Vector3::operator-=(const Vector3 &v) {
 	this->X -= v.X;
 	this->Y -= v.Y;
 	this->Z -= v.Z;
+}
+
+void Vector3::operator-=(float f) {
+	this->X -= f;
+	this->Y -= f;
+	this->Z -= f;
+}
+
+void Vector3::operator*=(const Vector3 &v) {
+	this->X *= v.X;
+	this->Y *= v.Y;
+	this->Z *= v.Z;
+}
+
+void Vector3::operator*=(float f) {
+	this->X *= f;
+	this->Y *= f;
+	this->Z *= f;
+}
+
+void Vector3::operator/=(const Vector3 &v) {
+	this->X /= v.X;
+	this->Y /= v.Y;
+	this->Z /= v.Z;
+}
+
+void Vector3::operator/=(float f) {
+	this->X /= f;
+	this->Y /= f;
+	this->Z /= f;
 }
 
 Vector3 Vector3::operator*(Vector3 v) {
@@ -99,10 +147,6 @@ Vector3 Vector3::operator*(float f) {
 }
 
 Vector3 Vector3::operator/(float f) {
-	return Vector3(this->X / f, this->Y / f, this->Z / f);
-}
-
-Vector3 Vector3::operator/=(float f) {
 	return Vector3(this->X / f, this->Y / f, this->Z / f);
 }
 
