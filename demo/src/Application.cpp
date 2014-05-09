@@ -46,7 +46,7 @@ bool Application::run(){
     sim.Init();
 
     std::vector<Boid*> boids;
-    this->CreateBoids(3, 100, 3, NULL, &boids, &sim, Vector3(0.f, 0.f, 0.f));
+    this->CreateBoids(2, 50, 3, NULL, &boids, &sim, Vector3(0.f, 0.f, 0.f));
 	/*this->CreateBoids(150, &boids, &sim, Vector3(0.f, 0.f, 0.f));	
 	this->CreateBoids(50, &boids, &sim, Vector3(40.f, 0.f, 0.f));*/
 

@@ -19,9 +19,11 @@ class Unit
 
 		Vector3 Separation(vector<Unit*> flock);
 		Vector3 Alignment(vector<Unit*> flock);
+		Vector3 CohesionCenter(vector<Unit*> flock);
 		Vector3 Cohesion(vector<Unit*> flock);
 		Vector3 Seek(Vector3& target);
 		
+		Vector3 * GetPosition();
 		Vector3 * GetVelocity();
 		vector<Unit*> GetUnits();
 		void AddUnit(Unit *unit);

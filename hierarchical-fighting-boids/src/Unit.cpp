@@ -17,8 +17,8 @@ Unit::Unit(Vector3 position, Vector3 velocity, Unit * leader, int team, void *da
 	this->leader = leader;
 	this->team = team;
 	this->data = data;
-	this->maxSpeed = 5;
-	this->maxSteeringForce = 0.05f;
+	this->maxSpeed = 10;
+	this->maxSteeringForce = 0.08f;
 	this->test = true;
 	if(leader == NULL)
 		this->target = Vector3(40.f, 20.f, 0.f);
@@ -53,8 +53,9 @@ void Unit::Update(float deltaTime) {
 		this->ApplyForce(this->Seek(this->target));
 	} else {
 		this->Flock(this->leader->GetUnits(), deltaTime);
-		this->ApplyForce(this->Seek(this->leader->position) * 3.0f);
-	}			
+		//this->ApplyForce(this->Seek(this->leader->position) * 3.0f);
+	}		
+
 	this->Move(deltaTime);
 	//this->Border();
 }
@@ -63,14 +64,17 @@ void Unit::Flock(vector<Unit*> flock, float deltaTime) {
 	Vector3 separation = this->Separation(flock);
 	Vector3 alignment = this->Alignment(flock);
 	Vector3 cohesion = this->Cohesion(flock);
+	Vector3 cohesionCenter = this->CohesionCenter(flock);
 
 	separation *= 5.0f;
 	alignment *= 1.0f;
 	cohesion *= 1.0f;
+	cohesionCenter *= 0.01f;
 
 	this->ApplyForce(separation);
 	this->ApplyForce(alignment);
 	this->ApplyForce(cohesion);
+	this->ApplyForce(cohesionCenter);
 }
 
 void Unit::ApplyForce(Vector3 force) {
@@ -126,7 +130,7 @@ Vector3 Unit::Separation(vector<Unit*> flock) {
 }
 
 Vector3 Unit::Alignment(vector<Unit*> flock) {
-	float neighborDistance = 8.f;
+	float neighborDistance = 50.f;
 	Vector3 alignment;
 	int count = 0;
 
@@ -159,6 +163,23 @@ Vector3 Unit::Alignment(vector<Unit*> flock) {
 	}
 
 	return alignment;
+}
+
+Vector3 Unit::CohesionCenter(vector<Unit*> flock) {
+	Vector3 center;
+
+	for(unsigned int i=0; i<flock.size(); i++) {
+		if(this != flock[i]) {
+			center += flock[i]->GetPosition();
+		}
+	}
+
+	center /= (float)(flock.size() - 1);
+	center.Normalize();
+
+	Vector3 steer = center - this->position;
+
+	return steer;
 }
 
 Vector3 Unit::Cohesion(vector<Unit*> flock) {
@@ -214,6 +235,10 @@ void Unit::Border() {
 Vector3 Unit::GetPosition() {
 	return this->position;
 }*/
+
+Vector3 * Unit::GetPosition() {
+	return &this->position;
+}
 
 Vector3 * Unit::GetVelocity() {
 	return &this->velocity;
