@@ -58,11 +58,14 @@ float Vector3::Length(){
 * Normalize a vector
 * Vector3(X/Length, Y/Length)
 */
-void Vector3::Normalize(){
+Vector3 Vector3::Normalize(){
+    Vector3 res;
     float length = this->Length();
-    this->X /= length;
-	this->Y /= length;
-	this->Z /= length;
+    if(length == 0.f) return Vector3();
+    res.X = this->X / length;
+    res.Y = this->Y / length;
+    res.Z = this->Z / length;
+    return res;
 }
 
 
@@ -75,11 +78,17 @@ void Vector3::Limit(float limit) {
 	if(this->Z <= -limit) this->Z = -limit;
 }
 
-Vector3 Vector3::operator+(Vector3 v) {
+Vector3& Vector3::operator=(const Vector3 &v){
+    this->X = v.X;
+    this->Z = v.Z;
+    this->Y = v.Y;
+}
+
+Vector3 Vector3::operator+(const Vector3 &v) {
 	return Vector3(this->X + v.X, this->Y + v.Y, this->Z + v.Z);
 }
 
-Vector3 Vector3::operator-(Vector3 v) {
+Vector3 Vector3::operator-(const Vector3 &v) {
 	return Vector3(this->X - v.X, this->Y - v.Y, this->Z - v.Z);
 }
 

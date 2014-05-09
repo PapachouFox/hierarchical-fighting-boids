@@ -1,258 +1,93 @@
 #include "Unit.h"
 
-vector<void*> globalBoids;
-vector<Unit*> Unit::globalUnits;
+Unit::Unit(void){
 
-Unit::Unit(void)
-{
-	globalUnits.push_back(this);
-	this->team = 0;
 }
 
-Unit::Unit(Vector3 position, Vector3 velocity, Unit * leader, int team, void *data) 
-{
-	globalUnits.push_back(this);
-	this->position = position;
-	this->velocity = velocity;
-	this->leader = leader;
-	this->team = team;
-	this->data = data;
-	this->maxSpeed = 10;
-	this->maxSteeringForce = 0.08f;
-	this->test = true;
-	if(leader == NULL)
-		this->target = Vector3(40.f, 20.f, 0.f);
+Unit::Unit(Vector3 position, Vector3 velocity, void *data){
+    this->m_position = position;
+    this->m_velocity = velocity;
+    this->m_data = data;
+    this->m_speed = 0.0005f;
+    this->m_lead = NULL;
 }
 
-Unit::~Unit(void)
-{
-	for(unsigned int i=0; i<this->units.size(); i++) {
-		delete this->units[i];
-		this->units.erase(this->units.begin() + i);
-	}
-
-	for(unsigned int j=0; j<globalUnits.size(); j++) {
-		if(this == globalUnits[j]) {			
-			globalUnits.erase(globalUnits.begin() + j);
-			break;
-		}
+Unit::~Unit(void){
+    for(unsigned int i=0; i<this->m_units.size(); i++) {
+        delete this->m_units[i];
+        this->m_units.erase(this->m_units.begin() + i);
 	}
 }
 
-void Unit::Update(float deltaTime) {
-	if(this->leader == NULL) {		
-		Vector3 v1 = Vector3(40.f, 20.f, 0.f);
-		Vector3 v2 = Vector3(-40.f, -20.f, 0.f);
-		if(this->test && this->position.Distance(&v1) < 2) {
-			this->test = false;
-			target = v2;
-		} else if (!this->test && this->position.Distance(&v2) < 2) {
-			this->test = true;
-			target = v1;
-		}
-		this->ApplyForce(this->Seek(this->target));
-	} else {
-		this->Flock(this->leader->GetUnits(), deltaTime);
-		//this->ApplyForce(this->Seek(this->leader->position) * 3.0f);
-	}		
+void Unit::Update(float deltaTime, vector<Unit*> p_flock) {
+    Vector3 steer = (this->m_lead != NULL)?this->m_lead->m_position - this->m_position:Vector3();
 
-	this->Move(deltaTime);
-	//this->Border();
+    this->m_velocity += (this->Center(p_flock)+this->Avoid(p_flock)+steer*10.f).Normalize();
+    this->m_position += this->m_velocity * this->m_speed * deltaTime;
+
+    for(unsigned int i = 0; i < this->m_units.size(); i++){
+        this->m_units[i]->Update(deltaTime, this->m_units);
+    }
 }
 
-void Unit::Flock(vector<Unit*> flock, float deltaTime) {
-	Vector3 separation = this->Separation(flock);
-	Vector3 alignment = this->Alignment(flock);
-	Vector3 cohesion = this->Cohesion(flock);
-	Vector3 cohesionCenter = this->CohesionCenter(flock);
+Vector3 Unit::Center(vector<Unit*>& p_flock){
+    if(p_flock.size() == 0) return Vector3();
 
-	separation *= 5.0f;
-	alignment *= 1.0f;
-	cohesion *= 1.0f;
-	cohesionCenter *= 0.01f;
+    Vector3 center;
+    for(unsigned int i = 0; i < p_flock.size(); i++){
+        if(p_flock[i] != this){
+            center += p_flock[i]->m_position;
+        }
+    }
+    center /= p_flock.size()-1;
 
-	this->ApplyForce(separation);
-	this->ApplyForce(alignment);
-	this->ApplyForce(cohesion);
-	this->ApplyForce(cohesionCenter);
+    return (center - this->m_position);
 }
 
-void Unit::ApplyForce(Vector3 force) {
-	this->acceleration += force;
+Vector3 Unit::Avoid(vector<Unit*>& p_flock){
+    if(p_flock.size() == 0) return Vector3();
+    float maxDistance = 10.f;
+
+    Vector3 move;
+    for(unsigned int i = 0; i < p_flock.size(); i++){
+         if(p_flock[i] != this){
+             if(p_flock[i]->m_position.Distance(this->m_position) < maxDistance){
+                move += this->m_position - p_flock[i]->m_position;
+             }
+         }
+    }
+
+    return move;
 }
 
-void Unit::Move(float deltaTime) {
-	this->velocity += this->acceleration;
-	this->velocity.Limit(this->maxSpeed);
-	this->position += this->velocity * deltaTime / 500;
-	this->acceleration *= 0;
+Vector3 Unit::Speed(vector<Unit*>& p_flock){
+    if(p_flock.size() == 0) return Vector3();
+
+    Vector3 velocity;
+    for(unsigned int i = 0; i < p_flock.size(); i++){
+         if(p_flock[i] != this){
+            velocity += p_flock[i]->m_velocity;
+         }
+    }
+    velocity /= p_flock.size()-1;
+
+    return (velocity - this->m_velocity)/10.f;
 }
 
-Vector3 Unit::Separation(vector<Unit*> flock) {
-	float desiredSeparation = 3.0f;
-	Vector3 steer;
-	int count = 0;
-
-	for(unsigned int i=0; i<flock.size(); i++) {
-		float d = this->position.Distance(flock[i]->position);
-		if((d > 0) && (d < desiredSeparation)) {
-			Vector3 diff = this->position - flock[i]->position;
-			diff.Normalize();
-			diff /= d;
-			steer += diff;
-			count++;
-		}
-	}
-
-	if(this->leader != NULL) {
-		float d = this->position.Distance(this->leader->position);
-		if((d > 0) && (d < desiredSeparation)) {
-			Vector3 diff = this->position - this->leader->position;
-			diff.Normalize();
-			diff /= d;
-			steer += diff;
-			count++;
-		}
-	}
-
-	if(count > 0) {
-		steer /= (float)count;
-	}
-
-	if(steer.Length() > 0) {
-		steer.Normalize();
-		steer *= this->maxSpeed;
-		steer -= this->velocity;
-		steer.Limit(this->maxSteeringForce);
-	}
-
-	return steer;
+void Unit::SetLeader(Unit* p_lead){
+    this->m_lead = p_lead;
 }
 
-Vector3 Unit::Alignment(vector<Unit*> flock) {
-	float neighborDistance = 50.f;
-	Vector3 alignment;
-	int count = 0;
-
-	for(unsigned int i=0; i<flock.size(); i++) {
-		float d = this->position.Distance(flock[i]->position);
-		if((d > 0) && (d < neighborDistance)) {
-			alignment += flock[i]->GetVelocity();
-			count++;
-		}
-	}
-
-	if(this->leader != NULL) {
-		float d = this->position.Distance(this->leader->position);
-		if((d > 0) && (d < neighborDistance)) {
-			alignment += this->leader->GetVelocity();
-			count++;
-		}
-	}
-
-	if(count > 0) {
-		alignment /= (float)count;
-		alignment.Normalize();
-		alignment *= this->maxSpeed;
-		Vector3 steer = alignment - this->velocity;
-		steer.Limit(this->maxSteeringForce);
-		return steer;
-	} else {
-		Vector3 v;
-		return v;
-	}
-
-	return alignment;
-}
-
-Vector3 Unit::CohesionCenter(vector<Unit*> flock) {
-	Vector3 center;
-
-	for(unsigned int i=0; i<flock.size(); i++) {
-		if(this != flock[i]) {
-			center += flock[i]->GetPosition();
-		}
-	}
-
-	center /= (float)(flock.size() - 1);
-	center.Normalize();
-
-	Vector3 steer = center - this->position;
-
-	return steer;
-}
-
-Vector3 Unit::Cohesion(vector<Unit*> flock) {
-	float neighborDistance = 20.f;
-	Vector3 cohesion;
-	int count = 0;
-
-	for(unsigned int i=0; i<flock.size(); i++) {
-		float d = this->position.Distance(flock[i]->position);
-		if((d > 0) && (d < neighborDistance)) {
-			cohesion += flock[i]->position;
-			count++;
-		}
-	}
-
-	if(this->leader != NULL) {
-		float d = this->position.Distance(this->leader->position);
-		if((d > 0) && (d < neighborDistance)) {
-			cohesion += this->leader->position;
-			count++;
-		}
-	}
-
-	if(count > 0) {
-		cohesion /= (float)count;
-		return this->Seek(cohesion);
-	} else {
-		Vector3 v;
-		return v;
-	}
-}
-
-Vector3 Unit::Seek(Vector3& target) {
-	Vector3 desired = target - this->position;
-	desired.Normalize();
-	desired *= this->maxSpeed;
-
-	Vector3 steer = desired - this->velocity;
-	steer.Limit(this->maxSteeringForce);
-	return steer;
-}
-
-void Unit::Border() {
-	if(this->position.X < -50) this->position.X = -50;
-	if(this->position.Y < -50) this->position.Y = -50;
-	if(this->position.Z < -50) this->position.Z = -50;
-	if(this->position.X > 50) this->position.X = 50;
-	if(this->position.Y > 50) this->position.Y = 50;
-	if(this->position.Z > 50) this->position.Z = 50;
-}
-
-/*
-Vector3 Unit::GetPosition() {
-	return this->position;
-}*/
-
-Vector3 * Unit::GetPosition() {
-	return &this->position;
-}
-
-Vector3 * Unit::GetVelocity() {
-	return &this->velocity;
-}
-
-void * Unit::GetData() {
-	return this->data;
+void* Unit::GetData() {
+    return this->m_data;
 }
 
 void Unit::AddUnit(Unit *unit) {
-	this->units.push_back(unit);
+    unit->SetLeader(this);
+    this->m_units.push_back(unit);
 }
 
-vector<Unit*> Unit::GetUnits() {
-	return this->units;
+vector<Unit*> Unit::GetRootUnits() {
+    return this->m_units;
 }
 

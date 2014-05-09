@@ -1,5 +1,6 @@
 #pragma once
 #include <irrlicht/irrlicht.h>
+#include <time.h>
 #include "Boid.h"
 #include "Simulation.h"
 
@@ -16,7 +17,7 @@ public:
   Application();
   ~Application();
   bool run();
-  void CreateBoids(int number, int numberSubUnit, float size, Unit * leader, std::vector<Boid*> *boids, Simulation *sim, Vector3 position);
+  void CreateBoids(int number, int numberSubUnit, float size, std::vector<Boid*> &boids, Simulation &sim, Unit* parent, int pr, int pg, int pb);
 
 private:
   GAME_STATE state;

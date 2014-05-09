@@ -34,9 +34,6 @@ void Application::init(){
     scene::ISceneNode* skybox = smgr->addSkyBoxSceneNode(text,text,text,text,text,text);
 }
 
-#include <iostream>
-#include <time.h>
-
 bool Application::run(){
     if(!device){
         return false;
@@ -46,7 +43,7 @@ bool Application::run(){
     sim.Init();
 
     std::vector<Boid*> boids;
-    this->CreateBoids(2, 50, 3, NULL, &boids, &sim, Vector3(0.f, 0.f, 0.f));
+    this->CreateBoids(5, 100, 3, boids, sim, NULL,0,0,0);
 	/*this->CreateBoids(150, &boids, &sim, Vector3(0.f, 0.f, 0.f));	
 	this->CreateBoids(50, &boids, &sim, Vector3(40.f, 0.f, 0.f));*/
 
@@ -58,10 +55,10 @@ bool Application::run(){
         TimeStamp = irrTimer->getTime();
 
         sim.Update((float)DeltaTime);
-        vector<Unit*>* list = sim.GetAllUnits();
-        for(unsigned int i = 0; i < list->size(); i++){
-			Vector3 pos = list->at(i)->position;
-            ((Boid*)list->at(i)->GetData())->setPosition(core::vector3df(pos.X, pos.Y, pos.Z));
+        vector<Unit*> list = sim.GetAllUnits();
+        for(unsigned int i = 0; i < list.size(); i++){
+            Vector3 pos = list[i]->m_position;
+            ((Boid*)list[i]->GetData())->setPosition(core::vector3df(pos.X, pos.Y, pos.Z));
         }
 
         driver->beginScene();
@@ -76,24 +73,41 @@ bool Application::run(){
     return true;
 }
 
-void Application::CreateBoids(int number, int numberSubUnit, float size, Unit * leader, std::vector<Boid*> *boids, Simulation *sim, Vector3 position) {
+void Application::CreateBoids(int number, int numberSubUnit, float size, std::vector<Boid*> &boids, Simulation &sim, Unit* parent, int pr, int pg, int pb) {
 	for(int i = 0; i < number; i++){
+        int r,g,b = 0;
+
+        if(parent == NULL){
+            r = rand()%255;
+            g = rand()%255;
+            b = rand()%255;
+        }else{
+            r = pr;
+            g = pg;
+            b = pb;
+        }
+
         Boid* monBoid = new Boid(smgr, size); 
-        boids->push_back(monBoid);
+        monBoid->setColor(r,g,b);
+        boids.push_back(monBoid);
+
         float t1 = (rand()%10 > 5) ? -1.f : 1.f;
         float t2 = (rand()%10 > 5) ? -1.f : 1.f;
         float t3 = (rand()%10 > 5) ? -1.f : 1.f;
 
-        float x = rand() %10 * t1;
-        float y = rand() %10 * t2;
-        float z = rand() %10 * t3;
+        float x = rand() %15 * t1;
+        float y = rand() %15 * t2;
+        float z = rand() %15 * t3;
 
-        Unit * unit = sim->CreateUnit(Vector3(x, y, z), Vector3(), leader, 0, monBoid);
-		sim->AddUnit(unit);
-		if(leader != NULL)
-			leader->AddUnit(unit);
+        Unit * unit = sim.CreateUnit(Vector3(x, y, z), Vector3(), monBoid);
+        if(parent == NULL){
+            sim.AddUnit(unit);
+        }else{
+            parent->AddUnit(unit);
+        }
 
-		if(numberSubUnit > 0)
-            this->CreateBoids(numberSubUnit, 0, 1, unit, boids, sim, Vector3(x, y, z));
+        if(numberSubUnit > 0){
+            this->CreateBoids(numberSubUnit, 0, size/2, boids, sim, unit, r, g, b);
+        }
     }
 }

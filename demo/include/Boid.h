@@ -7,6 +7,7 @@ public:
     ~Boid();
     void setPosition(const irr::core::vector3df &pNewpos);
     void setOrientation(const irr::core::vector2df &pNeworientation);
+    void setColor(int r, int g, int b);
 private:
     irr::scene::ISceneManager* mSmgr;
     irr::scene::IMeshSceneNode* mCube;

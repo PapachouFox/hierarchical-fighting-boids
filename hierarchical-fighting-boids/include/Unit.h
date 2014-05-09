@@ -2,49 +2,35 @@
 #include "Vector3.h"
 #include <vector>
 
+#ifndef NULL
+#define NULL 0
+#endif
 using namespace std;
 
 class Unit
 {
 	public:
 		Unit(void);
-		Unit(Vector3 position, Vector3 velocity, Unit * leader, int team, void *data);
+        Unit(Vector3 position, Vector3 velocity, void *data);
 		~Unit(void);
 
-		void Update(float deltaTime);
-		void Flock(vector<Unit*> flock, float deltaTime);
-		void Move(float deltaTime);
-		void Border();		
-		void ApplyForce(Vector3 force);
+        void Update(float deltaTime, vector<Unit*> p_flock);
 
-		Vector3 Separation(vector<Unit*> flock);
-		Vector3 Alignment(vector<Unit*> flock);
-		Vector3 CohesionCenter(vector<Unit*> flock);
-		Vector3 Cohesion(vector<Unit*> flock);
-		Vector3 Seek(Vector3& target);
-		
-		Vector3 * GetPosition();
-		Vector3 * GetVelocity();
-		vector<Unit*> GetUnits();
-		void AddUnit(Unit *unit);
+        vector<Unit*> GetRootUnits();
+        void AddUnit(Unit *unit);
+        void SetLeader(Unit* p_lead);
 		void * GetData();
 
-		Vector3 position;
-		static vector<Unit*> globalUnits;
+        Vector3 m_position;
+        float m_speed;
 	private:
-		vector<Unit*> units;
-		Unit * leader;
+        vector<Unit*> m_units;
+        Vector3 m_velocity;
+        void* m_data;
+        Unit* m_lead;
 
-		Vector3 velocity;
-		Vector3 acceleration;
-
-		float maxSteeringForce;
-		float maxSpeed;
-
-		int team;
-		void *data;
-
-		bool test;
-		Vector3 target;
+        Vector3 Center(vector<Unit*>& p_flock);
+        Vector3 Avoid(vector<Unit*>& p_flock);
+        Vector3 Speed(vector<Unit*>& p_flock);
 };
 
