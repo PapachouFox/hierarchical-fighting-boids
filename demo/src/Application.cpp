@@ -30,7 +30,7 @@ void Application::init(){
     camera->setTarget(core::vector3df(0., 0., 0.));
     camera->setPosition(core::vector3df(0., 0., -70.));
     camera->setFarValue(300.f);
-    video::ITexture* text = driver->getTexture("../textures/ESO_-_Milky_Way_Bottom.bmp");
+    video::ITexture* text = driver->getTexture("../textures/skybox_bottom.bmp");
     scene::ISceneNode* skybox = smgr->addSkyBoxSceneNode(text,text,text,text,text,text);
 }
 
@@ -46,7 +46,7 @@ bool Application::run(){
     sim.Init();
 
     std::vector<Boid*> boids;
-	this->CreateBoids(10, 50, 3, NULL, &boids, &sim, Vector3(0.f, 0.f, 0.f));
+    this->CreateBoids(3, 100, 3, NULL, &boids, &sim, Vector3(0.f, 0.f, 0.f));
 	/*this->CreateBoids(150, &boids, &sim, Vector3(0.f, 0.f, 0.f));	
 	this->CreateBoids(50, &boids, &sim, Vector3(40.f, 0.f, 0.f));*/
 
@@ -80,20 +80,20 @@ void Application::CreateBoids(int number, int numberSubUnit, float size, Unit * 
 	for(int i = 0; i < number; i++){
         Boid* monBoid = new Boid(smgr, size); 
         boids->push_back(monBoid);
-		float t1 = (rand()%10 > 5) ? -1.f : 1.f;
-		float t2 = (rand()%10 > 5) ? -1.f : 1.f;
-		float t3 = (rand()%10 > 5) ? -1.f : 1.f;
+        float t1 = (rand()%10 > 5) ? -1.f : 1.f;
+        float t2 = (rand()%10 > 5) ? -1.f : 1.f;
+        float t3 = (rand()%10 > 5) ? -1.f : 1.f;
 
-		float x = (float)((double)rand() / (RAND_MAX) + 2) * t1;
-		float y = (float)((double)rand() / (RAND_MAX) + 2) * t2;
-		float z = 0.f;
+        float x = rand() %10 * t1;
+        float y = rand() %10 * t2;
+        float z = rand() %10 * t3;
 
-		Unit * unit = sim->CreateUnit(position, Vector3(x, y, z), leader, 0, monBoid);		
+        Unit * unit = sim->CreateUnit(Vector3(x, y, z), Vector3(), leader, 0, monBoid);
 		sim->AddUnit(unit);
 		if(leader != NULL)
 			leader->AddUnit(unit);
 
 		if(numberSubUnit > 0)
-			this->CreateBoids(numberSubUnit, 0, 1, unit, boids, sim, Vector3(x, y, z));
+            this->CreateBoids(numberSubUnit, 0, 1, unit, boids, sim, Vector3(x, y, z));
     }
 }
