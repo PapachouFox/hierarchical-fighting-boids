@@ -82,6 +82,7 @@ Vector3& Vector3::operator=(const Vector3 &v){
     this->X = v.X;
     this->Z = v.Z;
     this->Y = v.Y;
+    return *this;
 }
 
 Vector3 Vector3::operator+(const Vector3 &v) {
