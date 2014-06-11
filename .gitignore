@@ -26,6 +26,9 @@
 **/*.sdf
 **/*.opensdf
 **/Debug/*
+*.sdf
+*.opensdf
+*.suo
 
 #CMake Stuff
 **/build/*
