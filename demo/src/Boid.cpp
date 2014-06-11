@@ -3,7 +3,8 @@
 
 Boid::Boid(irr::scene::ISceneManager* pSmgr, float size){
     this->mSmgr = pSmgr;
-    this->mCube = this->mSmgr->addCubeSceneNode(size);
+    irr::scene::IAnimatedMesh* mesh = pSmgr->getMesh("../resources/models/spaceship.coyhot.3ds");
+    this->mCube = pSmgr->addMeshSceneNode(mesh);
 }
 
 Boid::~Boid(){
@@ -22,6 +23,10 @@ void Boid::setPosition(const irr::core::vector3df &pNewpos){
     this->mCube->setPosition(pNewpos);
 }
 
-void Boid::setOrientation(const irr::core::vector2df &pNeworientation){
-    //this->mCube->setRotation(pNeworientation);
+void Boid::setOrientation(const irr::core::vector3df &pDirection){
+    if ( !this->mCube ) return;
+    irr::core::vector3df rot, dif = this->mCube->getPosition() - pDirection;
+    rot.Y = atan2( dif.X, dif.Z ) * 180.f / irr::core::PI;
+    rot.X = -atan2( dif.Y, sqrt( dif.X * dif.X + dif.Z * dif.Z ) ) * 180.f / irr::core::PI;
+    this->mCube->setRotation( rot );
 }

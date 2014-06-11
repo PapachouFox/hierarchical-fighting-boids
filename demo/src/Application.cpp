@@ -58,7 +58,9 @@ bool Application::run(){
         vector<Unit*> list = sim.GetAllUnits();
         for(unsigned int i = 0; i < list.size(); i++){
             Vector3 pos = list[i]->m_position;
+            ((Boid*)list[i]->GetData())->setOrientation(core::vector3df(pos.X, pos.Y, pos.Z));
             ((Boid*)list[i]->GetData())->setPosition(core::vector3df(pos.X, pos.Y, pos.Z));
+            
         }
 
         driver->beginScene();
