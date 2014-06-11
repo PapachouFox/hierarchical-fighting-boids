@@ -26,10 +26,10 @@ Application::~Application(){
 }
 
 void Application::init(){
-    scene::ICameraSceneNode* camera = smgr->addCameraSceneNodeFPS(0, 30.0f, 0.05f);
+    scene::ICameraSceneNode* camera = smgr->addCameraSceneNodeFPS(0, 30.0f, 0.4f);
     camera->setTarget(core::vector3df(0., 0., 0.));
     camera->setPosition(core::vector3df(0., 0., -70.));
-    camera->setFarValue(300.f);
+    camera->setFarValue(5000.f);
     video::ITexture* text = driver->getTexture("../resources/textures/skybox_bottom.bmp");
     scene::ISceneNode* skybox = smgr->addSkyBoxSceneNode(text,text,text,text,text,text);
 }
@@ -43,7 +43,7 @@ bool Application::run(){
     sim.Init();
 
     std::vector<Boid*> boids;
-    this->CreateBoids(5, 10, 3, boids, sim, NULL,0,0,0);
+    this->CreateBoids(5, 10, 10, boids, sim, NULL,0,0,0);
 
     //this->SetCameraTarget(boids[0]);
 	/*this->CreateBoids(150, &boids, &sim, Vector3(0.f, 0.f, 0.f));	

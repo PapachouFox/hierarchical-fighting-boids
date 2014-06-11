@@ -5,6 +5,9 @@ Boid::Boid(irr::scene::ISceneManager* pSmgr, float size){
     this->mSmgr = pSmgr;
     irr::scene::IAnimatedMesh* mesh = pSmgr->getMesh("../resources/models/spaceship.coyhot.3ds");
     this->mCube = pSmgr->addMeshSceneNode(mesh);
+    if(size >= 10){
+        this->mCube->setScale(irr::core::vector3df(size, size, size));
+    }
 }
 
 Boid::~Boid(){
