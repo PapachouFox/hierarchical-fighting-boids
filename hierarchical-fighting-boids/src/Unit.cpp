@@ -1,7 +1,7 @@
 #include "Unit.h"
 
 Unit::Unit(void){
-
+    this->m_lead = NULL;
 }
 
 Unit::Unit(Vector3 position, Vector3 velocity, void *data){
