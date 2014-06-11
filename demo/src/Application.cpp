@@ -44,6 +44,8 @@ bool Application::run(){
 
     std::vector<Boid*> boids;
     this->CreateBoids(5, 10, 3, boids, sim, NULL,0,0,0);
+
+    //this->SetCameraTarget(boids[0]);
 	/*this->CreateBoids(150, &boids, &sim, Vector3(0.f, 0.f, 0.f));	
 	this->CreateBoids(50, &boids, &sim, Vector3(40.f, 0.f, 0.f));*/
 
@@ -75,6 +77,13 @@ bool Application::run(){
     return true;
 }
 
+void Application::SetCameraTarget(Boid* boid){
+    this->smgr->getActiveCamera()->setParent(boid->getSceneNode());
+    this->smgr->getActiveCamera()->setPosition(irr::core::vector3df(0, 0, 2));
+    //this->smgr->getActiveCamera()->updateAbsolutePosition();
+    this->smgr->getActiveCamera()->setTarget(boid->getSceneNode()->getPosition());
+}
+
 void Application::CreateBoids(int number, int numberSubUnit, float size, std::vector<Boid*> &boids, Simulation &sim, Unit* parent, int pr, int pg, int pb) {
 	for(int i = 0; i < number; i++){
         int r,g,b = 0;
@@ -97,9 +106,9 @@ void Application::CreateBoids(int number, int numberSubUnit, float size, std::ve
         float t2 = (rand()%10 > 5) ? -1.f : 1.f;
         float t3 = (rand()%10 > 5) ? -1.f : 1.f;
 
-        float x = rand() %15 * t1;
-        float y = rand() %15 * t2;
-        float z = rand() %15 * t3;
+        float x = rand() %25 * t1;
+        float y = rand() %25 * t2;
+        float z = rand() %25 * t3;
 
         Unit * unit = sim.CreateUnit(Vector3(x, y, z), Vector3(), monBoid);
         if(parent == NULL){

@@ -14,16 +14,17 @@ enum GAME_STATE{
 
 class Application{
 public:
-  Application();
-  ~Application();
-  bool run();
-  void CreateBoids(int number, int numberSubUnit, float size, std::vector<Boid*> &boids, Simulation &sim, Unit* parent, int pr, int pg, int pb);
+    Application();
+    ~Application();
+    bool run();
+    void CreateBoids(int number, int numberSubUnit, float size, std::vector<Boid*> &boids, Simulation &sim, Unit* parent, int pr, int pg, int pb);
+    void SetCameraTarget(Boid* boid);
 
 private:
-  GAME_STATE state;
-  void init();
-  IrrlichtDevice *device;
-  scene::ISceneManager *smgr;
-  video::IVideoDriver* driver;
-  gui::IGUIEnvironment* guienv;
+    GAME_STATE state;
+    void init();
+    IrrlichtDevice *device;
+    scene::ISceneManager *smgr;
+    video::IVideoDriver* driver;
+    gui::IGUIEnvironment* guienv;
 };

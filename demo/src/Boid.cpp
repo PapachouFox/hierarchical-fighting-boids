@@ -30,3 +30,7 @@ void Boid::setOrientation(const irr::core::vector3df &pDirection){
     rot.X = -atan2( dif.Y, sqrt( dif.X * dif.X + dif.Z * dif.Z ) ) * 180.f / irr::core::PI;
     this->mCube->setRotation( rot );
 }
+
+irr::scene::ISceneNode* Boid::getSceneNode(){
+    return this->mCube;
+}

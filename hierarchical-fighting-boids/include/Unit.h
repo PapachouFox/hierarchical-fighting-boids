@@ -19,6 +19,7 @@ class Unit
         vector<Unit*> GetRootUnits();
         void AddUnit(Unit *unit);
         void SetLeader(Unit* p_lead);
+        void SetTarget(Unit* p_target);
 		void * GetData();
 
         Vector3 m_position;
@@ -28,6 +29,7 @@ class Unit
         Vector3 m_velocity;
         void* m_data;
         Unit* m_lead;
+        Unit* m_target;
 
         Vector3 Center(vector<Unit*>& p_flock);
         Vector3 Avoid(vector<Unit*>& p_flock);

@@ -20,6 +20,24 @@ void Simulation::Clear() {
 }
 
 void Simulation::Update(float deltaTime) {
+    //root unit IA
+    for(unsigned int i=0; i<this->m_units.size(); i++) {
+        //basic IA: chase closest high level enemy
+        unsigned int chaseIndex = 0;
+        unsigned int minDistance = 10000000;
+        for(unsigned int j=0; j<this->m_units.size(); j++) {
+            if(i!=j){
+                float dist = this->m_units[i]->m_position.Distance(this->m_units[j]->m_position);
+                if(dist < minDistance){
+                    minDistance = dist;
+                    chaseIndex = j;
+                }
+            }
+        }
+        if(i != chaseIndex)
+            this->m_units[i]->SetTarget(this->m_units[chaseIndex]);
+    }
+
     for(unsigned int i=0; i<this->m_units.size(); i++) {
         this->m_units[i]->Update(deltaTime, this->m_units);
 	}

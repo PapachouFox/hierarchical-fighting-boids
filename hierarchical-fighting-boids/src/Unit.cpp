@@ -2,6 +2,7 @@
 
 Unit::Unit(void){
     this->m_lead = NULL;
+    this->m_target = NULL;
 }
 
 Unit::Unit(Vector3 position, Vector3 velocity, void *data){
@@ -10,6 +11,7 @@ Unit::Unit(Vector3 position, Vector3 velocity, void *data){
     this->m_data = data;
     this->m_speed = 0.0005f;
     this->m_lead = NULL;
+    this->m_target = NULL;
 }
 
 Unit::~Unit(void){
@@ -20,10 +22,15 @@ Unit::~Unit(void){
 }
 
 void Unit::Update(float deltaTime, vector<Unit*> p_flock) {
-    Vector3 steer = (this->m_lead != NULL)?this->m_lead->m_position - this->m_position:Vector3();
-
-    this->m_velocity += (this->Center(p_flock)+this->Avoid(p_flock)+steer*10.f).Normalize();
-    this->m_position += this->m_velocity * this->m_speed * deltaTime;
+    if(this->m_lead != NULL){
+        Vector3 steer = (this->m_lead != NULL)?this->m_lead->m_position - this->m_position:Vector3();
+        this->m_velocity += (this->Center(p_flock)+this->Avoid(p_flock)+steer*10.f).Normalize();
+        this->m_position += this->m_velocity * this->m_speed * deltaTime;
+    }else{ //squad leader movement
+        //go to the current target:
+        this->m_velocity += ((this->m_target->m_position - this->m_position) + this->Avoid(p_flock)).Normalize();
+        this->m_position += this->m_velocity * this->m_speed * deltaTime;
+    }
 
     for(unsigned int i = 0; i < this->m_units.size(); i++){
         this->m_units[i]->Update(deltaTime, this->m_units);
@@ -91,3 +98,6 @@ vector<Unit*> Unit::GetRootUnits() {
     return this->m_units;
 }
 
+void Unit::SetTarget(Unit* p_target){
+    this->m_target = p_target;
+}
