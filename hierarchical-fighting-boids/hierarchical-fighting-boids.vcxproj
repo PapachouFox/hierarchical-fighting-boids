@@ -65,11 +65,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Projectile.h" />
     <ClInclude Include="include\Unit.h" />
     <ClInclude Include="include\simulation.h" />
     <ClInclude Include="include\Vector3.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Projectile.cpp" />
     <ClCompile Include="src\simulation.cpp" />
     <ClCompile Include="src\Unit.cpp" />
     <ClCompile Include="src\Vector3.cpp" />

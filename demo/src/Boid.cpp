@@ -15,6 +15,7 @@ Boid::~Boid(){
 }
 
 void Boid::setColor(int r, int g, int b){
+	this->mColor = irr::video::SColor(255,r,g,b);
     this->mCube->setMaterialFlag(irr::video::EMF_LIGHTING, true);
     this->mCube->getMaterial(0).DiffuseColor.set(0,0,0,0);
     this->mCube->getMaterial(0).AmbientColor.set(0,0,0,0);
@@ -36,4 +37,8 @@ void Boid::setOrientation(const irr::core::vector3df &pDirection){
 
 irr::scene::ISceneNode* Boid::getSceneNode(){
     return this->mCube;
+}
+
+irr::video::SColor Boid::getColor() {
+	return this->mColor;
 }

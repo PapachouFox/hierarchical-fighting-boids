@@ -61,12 +61,25 @@ bool Application::run(){
         for(unsigned int i = 0; i < list.size(); i++){
             Vector3 pos = list[i]->m_position;
             ((Boid*)list[i]->GetData())->setOrientation(core::vector3df(pos.X, pos.Y, pos.Z));
-            ((Boid*)list[i]->GetData())->setPosition(core::vector3df(pos.X, pos.Y, pos.Z));
-            
+            ((Boid*)list[i]->GetData())->setPosition(core::vector3df(pos.X, pos.Y, pos.Z));            
         }
 
         driver->beginScene();
         smgr->drawAll();
+
+		irr::video::SMaterial m;
+        m.Lighting=false;
+        driver->setMaterial(m);
+        driver->setTransform(video::ETS_WORLD, core::matrix4());
+		
+		for(unsigned int i = 0; i < list.size(); i++){
+			if(list[i]->m_target != NULL) {
+				Vector3 pos = list[i]->m_position;
+				Vector3 posTarget = list[i]->m_target->m_position;				
+				driver->draw3DLine(irr::core::vector3df(pos.X,pos.Y,pos.Z),irr::core::vector3df(posTarget.X,posTarget.Y,posTarget.Z), ((Boid*)list[i]->GetData())->getColor());
+			}
+		}
+
         driver->endScene();
     }
 
