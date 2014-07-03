@@ -16,6 +16,9 @@ Unit::Unit(Vector3 position, Vector3 velocity, void *data){
     this->m_target = NULL;
 	this->m_projCallback = NULL;
     this->m_cur_cooldown = 0;
+		
+	this->m_lifeTime = rand()%5000;
+	this->m_currentLifeTime = 0.f;
 }
 
 Unit::~Unit(void){
@@ -91,6 +94,16 @@ void Unit::Update(float deltaTime, vector<Unit*> p_flock) {
             this->m_projectiles[i].Update(deltaTime);
         }
     }
+
+	if(this->m_lead != NULL) {	
+		if(this->m_lifeTime > this->m_currentLifeTime) {
+			this->m_currentLifeTime++;
+		} else {
+			this->DeleteMe();
+			delete this->m_data;
+			delete this;
+		}
+	}
 }
 
 vector<Projectile> Unit::GetProjectileList(){
@@ -177,4 +190,12 @@ void Unit::CreateProjectile() {
         this->m_projectiles.push_back(Projectile(this->m_position, this->m_velocity * 3.f));
         this->m_projCallback->ProjectileCallback(this->m_projectiles[this->m_projectiles.size()-1]);
     }
+}
+
+void Unit::DeleteMe() {
+	for(unsigned int i=0; i<this->m_lead->m_units.size(); i++) {
+		if(this == this->m_lead->m_units[i]) {
+			this->m_lead->m_units.erase(this->m_lead->m_units.begin()+i);
+		}
+	}
 }

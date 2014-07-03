@@ -3,6 +3,8 @@
 #include "Projectile.h"
 #include "IProjectileCallback.h"
 #include <vector>
+#include <time.h>
+
 
 #ifndef NULL
 #define NULL 0
@@ -26,6 +28,7 @@ class Unit
         void AddUnit(Unit *unit);
         void SetLeader(Unit* p_lead);
         void SetTarget(Unit* p_target);
+		void DeleteMe();
 		void * GetData();
 		void CreateProjectile();
         void SetCallbackFunction(IProjectileCallback* p_ProjCallback);
@@ -43,7 +46,8 @@ class Unit
         Vector3 m_velocity;
         void* m_data;
         int m_cur_cooldown;
-
+		float m_currentLifeTime;
+		int m_lifeTime;
 
         Vector3 Center(vector<Unit*>& p_flock);
         Vector3 Avoid(vector<Unit*>& p_flock);

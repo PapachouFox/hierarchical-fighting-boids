@@ -11,7 +11,7 @@ Boid::Boid(irr::scene::ISceneManager* pSmgr, float size){
 }
 
 Boid::~Boid(){
-
+	this->mCube->drop();
 }
 
 void Boid::setColor(int r, int g, int b){

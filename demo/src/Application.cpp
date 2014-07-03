@@ -1,7 +1,7 @@
 #include "Application.h"
 
 Application::Application(){
-    device = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1920, 1080), 32, true, false);
+    device = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(800, 600), 32, false, false);
     if (device){
         device->setWindowCaption(L"Boids Demo - 0.1");
 
@@ -12,6 +12,36 @@ Application::Application(){
         smgr->setAmbientLight(video::SColorf(0.1f,0.1f,0.1f,1.f));
         smgr->setShadowColor(video::SColor(150,0,0,0));
 		font = device->getGUIEnvironment()->getFont("../resources/fonts/myfont.bmp");
+
+		m_currentTime = 0;
+		m_lastTime = 0;
+
+		ps = smgr->addParticleSystemSceneNode(false);
+		em = ps->createBoxEmitter(
+		core::aabbox3d<f32>(-2,0,-2,2,1,2), // emitter size
+		core::vector3df(0.0f,0.0f,0.0f),   // initial direction
+		20,50,                             // emit rate
+		video::SColor(0,255,255,255),       // darkest color
+		video::SColor(0,255,255,255),       // brightest color
+		600,800,90,                         // min and max age, angle
+		core::dimension2df(5.f,5.f),         // min size
+		core::dimension2df(10.f,10.f));        // max size
+
+		ps->setEmitter(em); // this grabs the emitter
+		em->drop(); // so we can drop it here without deleting it
+
+		scene::IParticleAffector* paf = ps->createFadeOutParticleAffector();
+
+		ps->addAffector(paf); // same goes for the affector
+		paf->drop();
+
+		ps->setPosition(irr::core::vector3df());
+		ps->setScale(core::vector3df(2,2,2));
+		ps->setMaterialFlag(video::EMF_LIGHTING, false);
+		ps->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
+		ps->setMaterialTexture(0, driver->getTexture("../resources/textures/explosion.jpg"));
+		ps->setMaterialType(irr::video::EMT_TRANSPARENT_ADD_COLOR);
+
         device->getCursorControl()->setVisible(false);
         init();
 
@@ -36,7 +66,7 @@ void Application::init(){
 
 
 void Application::ProjectileCallback(Projectile& proj){
-
+	
 }
 
 bool Application::run(){
@@ -47,8 +77,10 @@ bool Application::run(){
     Simulation sim;
     sim.Init();
 
-    std::vector<Boid*> boids;
-    this->CreateBoids(3, 10, 10, boids, sim, NULL,0,0,0);
+    //std::vector<Boid*> boids;
+	int nbLead = 3;
+	int nbUnit = 20;
+    this->CreateBoids(nbLead, nbUnit, 10, sim, NULL,0,0,0);
 
     //this->SetCameraTarget(boids[0]);
 	/*this->CreateBoids(150, &boids, &sim, Vector3(0.f, 0.f, 0.f));	
@@ -77,6 +109,18 @@ bool Application::run(){
         driver->setMaterial(m);
         driver->setTransform(video::ETS_WORLD, core::matrix4());
 		
+		m_currentTime += DeltaTime;
+
+		if(m_currentTime >= m_lastTime) {
+			m_lastTime = TimeStamp + 10000 / (nbUnit * nbLead);
+			if(list.size() > nbLead) {			
+				int r = rand()%list.size();
+				ps->setPosition(irr::core::vector3df(list[r]->m_position.X, list[r]->m_position.Y, list[r]->m_position.Z));
+			} else {
+				ps->setEmitter(0);
+			}
+		}
+
 		for(unsigned int i = 0; i < list.size(); i++){
 			if(list[i]->m_lead == NULL && list[i]->m_target != NULL) {
 				Vector3 pos = list[i]->m_position;
@@ -114,9 +158,9 @@ bool Application::run(){
         driver->endScene();
     }
 
-    for(unsigned int i = 0; i < boids.size(); i++){
+    /*for(unsigned int i = 0; i < boids.size(); i++){
         delete boids[i];
-    }
+    }*/
     sim.Clear();
     return true;
 }
@@ -128,7 +172,7 @@ void Application::SetCameraTarget(Boid* boid){
     this->smgr->getActiveCamera()->setTarget(boid->getSceneNode()->getPosition());
 }
 
-void Application::CreateBoids(int number, int numberSubUnit, float size, std::vector<Boid*> &boids, Simulation &sim, Unit* parent, int pr, int pg, int pb) {
+void Application::CreateBoids(int number, int numberSubUnit, float size, Simulation &sim, Unit* parent, int pr, int pg, int pb) {
 	for(int i = 0; i < number; i++){
         int r,g,b = 0;
 
@@ -144,7 +188,7 @@ void Application::CreateBoids(int number, int numberSubUnit, float size, std::ve
 
         Boid* monBoid = new Boid(smgr, size); 
         monBoid->setColor(r,g,b);
-        boids.push_back(monBoid);
+        //boids.push_back(monBoid);
 
         float t1 = (rand()%10 > 5) ? -1.f : 1.f;
         float t2 = (rand()%10 > 5) ? -1.f : 1.f;
@@ -163,7 +207,7 @@ void Application::CreateBoids(int number, int numberSubUnit, float size, std::ve
         }
 
         if(numberSubUnit > 0){
-            this->CreateBoids(numberSubUnit, 0, size/2, boids, sim, unit, r, g, b);
+            this->CreateBoids(numberSubUnit, 0, size/2, sim, unit, r, g, b);
         }
     }
 }

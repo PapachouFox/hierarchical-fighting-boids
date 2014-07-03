@@ -18,7 +18,7 @@ public:
     Application();
     ~Application();
     bool run();
-    void CreateBoids(int number, int numberSubUnit, float size, std::vector<Boid*> &boids, Simulation &sim, Unit* parent, int pr, int pg, int pb);
+    void CreateBoids(int number, int numberSubUnit, float size, Simulation &sim, Unit* parent, int pr, int pg, int pb);
     void SetCameraTarget(Boid* boid);
     void ProjectileCallback(Projectile&);
 private:
@@ -29,4 +29,9 @@ private:
     video::IVideoDriver* driver;
     gui::IGUIEnvironment* guienv;
 	gui::IGUIFont* font;
+	scene::IParticleSystemSceneNode* ps;
+	scene::IParticleEmitter* em;
+
+	int m_currentTime;
+	int m_lastTime;
 };
