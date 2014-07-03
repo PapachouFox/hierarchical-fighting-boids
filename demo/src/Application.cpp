@@ -1,7 +1,7 @@
 #include "Application.h"
 
-Application::Application(){
-    device = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(640, 480), 32, false, true);
+Application::Application(){	
+    device = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(800, 600), 32, false, true);
     if (device){
         device->setWindowCaption(L"Boids Demo - 0.1");
 
@@ -11,7 +11,7 @@ Application::Application(){
         guienv = device->getGUIEnvironment();
         smgr->setAmbientLight(video::SColorf(0.1f,0.1f,0.1f,1.f));
         smgr->setShadowColor(video::SColor(150,0,0,0));
-
+		font = device->getGUIEnvironment()->getFont("../resources/fonts/myfont.bmp");
         device->getCursorControl()->setVisible(false);
         init();
 
@@ -35,7 +35,7 @@ void Application::init(){
 }
 
 void Application::ProjectileCallback(){
-
+	printf("Hi");
 }
 
 bool Application::run(){
@@ -77,10 +77,29 @@ bool Application::run(){
         driver->setTransform(video::ETS_WORLD, core::matrix4());
 		
 		for(unsigned int i = 0; i < list.size(); i++){
-			if(list[i]->m_target != NULL) {
+			if(list[i]->m_lead == NULL && list[i]->m_target != NULL) {
 				Vector3 pos = list[i]->m_position;
 				Vector3 posTarget = list[i]->m_target->m_position;				
 				driver->draw3DLine(irr::core::vector3df(pos.X,pos.Y,pos.Z),irr::core::vector3df(posTarget.X,posTarget.Y,posTarget.Z), ((Boid*)list[i]->GetData())->getColor());
+			}
+		}
+
+		if(font) {
+			std::vector<Unit*> rootUnits = sim.GetRootUnits();
+
+			for(unsigned int i = 0; i < rootUnits.size(); i++) {
+				wchar_t str[1000];
+				swprintf(str,  L"LEADER %d", i + 1);
+				video::SColor color = ((Boid*)rootUnits.at(i)->GetData())->getColor();
+
+				font->draw(str,
+						core::rect<s32>(20, (20 + 40)*i + 20,200,50),
+						color);
+
+				swprintf(str,  L"Units: %d", rootUnits.at(i)->m_units.size() + 1);
+				font->draw(str,
+						core::rect<s32>(45, (20 + 40)*i + 40,200,50),
+						color);
 			}
 		}
 

@@ -28,13 +28,13 @@ class Unit
         Vector3 m_position;
         float m_speed;
         Unit* m_target;
+        vector<Unit*> m_units;
+        Unit* m_lead;
 
 	private:
         IProjectileCallback* m_projCallback;
-        vector<Unit*> m_units;
         Vector3 m_velocity;
         void* m_data;
-        Unit* m_lead;
 
         Vector3 Center(vector<Unit*>& p_flock);
         Vector3 Avoid(vector<Unit*>& p_flock);
