@@ -83,7 +83,13 @@ void Unit::Update(float deltaTime, vector<Unit*> p_flock) {
     }
 
     for(unsigned int i = 0; i < this->m_projectiles.size(); i++){
-        this->m_projectiles[i].Update(deltaTime);
+        this->m_projectiles[i].ttl -= deltaTime;
+        if(this->m_projectiles[i].ttl <= 0){
+            this->m_projectiles.erase(this->m_projectiles.begin()+i);
+            i--;
+        }else{
+            this->m_projectiles[i].Update(deltaTime);
+        }
     }
 }
 
