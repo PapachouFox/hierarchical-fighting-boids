@@ -12,8 +12,8 @@ class Projectile
 		
 		Vector3 m_position;
 		float m_speed;
-
-	private:
         Vector3 m_velocity;
+	private:
+        
 };
 

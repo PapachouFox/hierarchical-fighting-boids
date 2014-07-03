@@ -87,6 +87,16 @@ void Unit::Update(float deltaTime, vector<Unit*> p_flock) {
     }
 }
 
+vector<Projectile> Unit::GetProjectileList(){
+    vector<Projectile> projList;
+    projList.insert(projList.end(), this->m_projectiles.begin(), this->m_projectiles.end());
+    for(unsigned int i = 0; i < this->m_units.size();i++){
+        auto tmp = this->m_units[i]->GetProjectileList();
+        projList.insert(projList.end(), tmp.begin(), tmp.end());
+    }
+    return projList;
+}
+
 Vector3 Unit::Center(vector<Unit*>& p_flock){
     if(p_flock.size() == 0) return Vector3();
 

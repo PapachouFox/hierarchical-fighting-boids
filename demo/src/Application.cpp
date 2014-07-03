@@ -83,6 +83,13 @@ bool Application::run(){
 				Vector3 posTarget = list[i]->m_target->m_position;				
 				driver->draw3DLine(irr::core::vector3df(pos.X,pos.Y,pos.Z),irr::core::vector3df(posTarget.X,posTarget.Y,posTarget.Z), ((Boid*)list[i]->GetData())->getColor());
 			}
+
+            auto projectiles = list[i]->GetProjectileList();
+            for(unsigned int j = 0; j < projectiles.size(); j++){
+                Vector3 pos = projectiles[j].m_position;
+                Vector3 posTarget = projectiles[j].m_position + (projectiles[j].m_velocity * projectiles[j].m_speed * 20.f);				
+				driver->draw3DLine(irr::core::vector3df(pos.X,pos.Y,pos.Z),irr::core::vector3df(posTarget.X,posTarget.Y,posTarget.Z), ((Boid*)list[i]->GetData())->getColor());
+            }
 		}
 
 		if(font) {

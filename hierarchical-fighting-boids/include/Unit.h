@@ -22,6 +22,7 @@ class Unit
         void Update(float deltaTime, vector<Unit*> p_flock);
 
         vector<Unit*> GetRootUnits();
+        vector<Projectile> GetProjectileList();
         void AddUnit(Unit *unit);
         void SetLeader(Unit* p_lead);
         void SetTarget(Unit* p_target);
