@@ -1,13 +1,6 @@
 #include "Application.h"
 
-
-void CreateProjectile() {
-	printf("Create projectile");
-}
-
 Application::Application(){
-	this->callbackFunction = CreateProjectile;
-
     device = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(640, 480), 32, false, true);
     if (device){
         device->setWindowCaption(L"Boids Demo - 0.1");
@@ -39,6 +32,10 @@ void Application::init(){
     camera->setFarValue(5000.f);
     video::ITexture* text = driver->getTexture("../resources/textures/skybox_bottom.bmp");
     scene::ISceneNode* skybox = smgr->addSkyBoxSceneNode(text,text,text,text,text,text);
+}
+
+void Application::ProjectileCallback(){
+
 }
 
 bool Application::run(){
@@ -129,9 +126,9 @@ void Application::CreateBoids(int number, int numberSubUnit, float size, std::ve
         float x = rand() %25 * t1;
         float y = rand() %25 * t2;
         float z = rand() %25 * t3;
-
+        
         Unit * unit = sim.CreateUnit(Vector3(x, y, z), Vector3(), monBoid);
-		unit->SetCallbackFunction(this->callbackFunction);
+        unit->SetCallbackFunction(this);
         if(parent == NULL){
             sim.AddUnit(unit);
         }else{

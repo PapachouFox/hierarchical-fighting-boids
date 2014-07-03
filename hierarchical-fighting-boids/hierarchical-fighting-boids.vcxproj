@@ -65,12 +65,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\IProjectileCallback.h" />
     <ClInclude Include="include\Projectile.h" />
     <ClInclude Include="include\Unit.h" />
     <ClInclude Include="include\simulation.h" />
     <ClInclude Include="include\Vector3.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\IProjectileCallback.cpp" />
     <ClCompile Include="src\Projectile.cpp" />
     <ClCompile Include="src\simulation.cpp" />
     <ClCompile Include="src\Unit.cpp" />

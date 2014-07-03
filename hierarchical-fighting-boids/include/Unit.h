@@ -1,13 +1,12 @@
 #pragma once
 #include "Vector3.h"
+#include "IProjectileCallback.h"
 #include <vector>
 
 #ifndef NULL
 #define NULL 0
 #endif
 using namespace std;
-
-typedef void (*callbackFunction)(void);
 
 class Unit
 {
@@ -24,14 +23,14 @@ class Unit
         void SetTarget(Unit* p_target);
 		void * GetData();
 		void CreateProjectile();
-		void SetCallbackFunction(callbackFunction p_callback);
-		callbackFunction m_callbackFunc;
+        void SetCallbackFunction(IProjectileCallback* p_ProjCallback);
 
         Vector3 m_position;
         float m_speed;
         Unit* m_target;
 
 	private:
+        IProjectileCallback* m_projCallback;
         vector<Unit*> m_units;
         Vector3 m_velocity;
         void* m_data;
