@@ -38,11 +38,9 @@ class Unit
 	private:
         IProjectileCallback* m_projCallback;
 
-        vector<Unit*> m_units;
         vector<Projectile> m_projectiles;
         Vector3 m_velocity;
         void* m_data;
-        Unit* m_lead;
         int m_cur_cooldown;
 
 
