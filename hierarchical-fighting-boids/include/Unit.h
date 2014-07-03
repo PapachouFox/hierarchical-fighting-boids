@@ -7,6 +7,8 @@
 #endif
 using namespace std;
 
+typedef void (*callbackFunction)(void);
+
 class Unit
 {
 	public:
@@ -21,6 +23,9 @@ class Unit
         void SetLeader(Unit* p_lead);
         void SetTarget(Unit* p_target);
 		void * GetData();
+		void CreateProjectile();
+		void SetCallbackFunction(callbackFunction p_callback);
+		callbackFunction m_callbackFunc;
 
         Vector3 m_position;
         float m_speed;

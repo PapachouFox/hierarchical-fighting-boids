@@ -19,6 +19,8 @@ public:
     bool run();
     void CreateBoids(int number, int numberSubUnit, float size, std::vector<Boid*> &boids, Simulation &sim, Unit* parent, int pr, int pg, int pb);
     void SetCameraTarget(Boid* boid);
+	//void CreateProjectile();
+	void (*callbackFunction)(void);
 
 private:
     GAME_STATE state;

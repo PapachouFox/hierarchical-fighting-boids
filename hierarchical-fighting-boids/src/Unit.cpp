@@ -12,6 +12,7 @@ Unit::Unit(Vector3 position, Vector3 velocity, void *data){
     this->m_speed = 0.0005f;
     this->m_lead = NULL;
     this->m_target = NULL;
+	this->m_callbackFunc = NULL;
 }
 
 Unit::~Unit(void){
@@ -134,4 +135,12 @@ vector<Unit*> Unit::GetRootUnits() {
 
 void Unit::SetTarget(Unit* p_target){
     this->m_target = p_target;
+}
+
+void Unit::SetCallbackFunction(callbackFunction p_callback) {
+	this->m_callbackFunc = p_callback;
+}
+
+void Unit::CreateProjectile() {
+	this->m_callbackFunc();
 }

@@ -1,6 +1,13 @@
 #include "Application.h"
 
+
+void CreateProjectile() {
+	printf("Create projectile");
+}
+
 Application::Application(){
+	this->callbackFunction = CreateProjectile;
+
     device = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(640, 480), 32, false, true);
     if (device){
         device->setWindowCaption(L"Boids Demo - 0.1");
@@ -43,7 +50,7 @@ bool Application::run(){
     sim.Init();
 
     std::vector<Boid*> boids;
-    this->CreateBoids(5, 10, 10, boids, sim, NULL,0,0,0);
+    this->CreateBoids(3, 10, 10, boids, sim, NULL,0,0,0);
 
     //this->SetCameraTarget(boids[0]);
 	/*this->CreateBoids(150, &boids, &sim, Vector3(0.f, 0.f, 0.f));	
@@ -124,6 +131,7 @@ void Application::CreateBoids(int number, int numberSubUnit, float size, std::ve
         float z = rand() %25 * t3;
 
         Unit * unit = sim.CreateUnit(Vector3(x, y, z), Vector3(), monBoid);
+		unit->SetCallbackFunction(this->callbackFunction);
         if(parent == NULL){
             sim.AddUnit(unit);
         }else{
