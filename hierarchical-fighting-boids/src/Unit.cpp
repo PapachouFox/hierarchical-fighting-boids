@@ -26,11 +26,28 @@ void Unit::Update(float deltaTime, vector<Unit*> p_flock) {
         Vector3 steer = (this->m_lead != NULL)?this->m_lead->m_position - this->m_position:Vector3();
 
         Vector3 prevVelocity = this->m_velocity;
+		if(this->m_target != NULL){
+			//move thowards target
+			this->m_velocity += (this->m_target->m_position - this->m_position).Normalize();
+		}
         this->m_velocity += (this->Center(p_flock)+this->Avoid(p_flock)+steer*10.f).Normalize();
         if((this->m_velocity.X + this->m_velocity.Y + this->m_velocity.Z) > 20.f)
             this->m_velocity = prevVelocity;
 
-        this->m_position += this->m_velocity * this->m_speed * deltaTime;
+		//find a new target
+		if(this->m_lead->m_target != NULL){
+			auto units = this->m_lead->m_target->GetRootUnits();
+			unsigned int closestIndex = 0;
+			float minDistance = 100.f;
+			for(unsigned int i = 0; i < units.size(); i++){
+				if(units[i]->m_position.Distance(this->m_position) < minDistance) closestIndex = i;
+				minDistance = units[i]->m_position.Distance(this->m_position);
+			}
+			this->m_target = units[closestIndex];
+		}
+
+		this->m_position += this->m_velocity * this->m_speed * deltaTime;
+
     }else{ //squad leader movement
         //go to the current target
         //if target is too close, flee
