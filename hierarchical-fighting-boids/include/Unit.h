@@ -1,11 +1,15 @@
 #pragma once
 #include "Vector3.h"
+#include "Projectile.h"
 #include "IProjectileCallback.h"
 #include <vector>
 
 #ifndef NULL
 #define NULL 0
 #endif
+
+#define SHOT_INTERVAL 1000
+
 using namespace std;
 
 class Unit
@@ -32,9 +36,11 @@ class Unit
 	private:
         IProjectileCallback* m_projCallback;
         vector<Unit*> m_units;
+        vector<Projectile> m_projectiles;
         Vector3 m_velocity;
         void* m_data;
         Unit* m_lead;
+        int m_cur_cooldown;
 
         Vector3 Center(vector<Unit*>& p_flock);
         Vector3 Avoid(vector<Unit*>& p_flock);

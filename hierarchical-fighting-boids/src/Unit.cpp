@@ -4,6 +4,7 @@ Unit::Unit(void){
     this->m_lead = NULL;
     this->m_target = NULL;
     this->m_projCallback = NULL;
+    this->m_cur_cooldown = 0;
 }
 
 Unit::Unit(Vector3 position, Vector3 velocity, void *data){
@@ -14,6 +15,7 @@ Unit::Unit(Vector3 position, Vector3 velocity, void *data){
     this->m_lead = NULL;
     this->m_target = NULL;
 	this->m_projCallback = NULL;
+    this->m_cur_cooldown = 0;
 }
 
 Unit::~Unit(void){
@@ -39,13 +41,15 @@ void Unit::Update(float deltaTime, vector<Unit*> p_flock) {
 		//find a new target
 		if(this->m_lead->m_target != NULL){
 			auto units = this->m_lead->m_target->GetRootUnits();
-			unsigned int closestIndex = 0;
-			float minDistance = 100.f;
-			for(unsigned int i = 0; i < units.size(); i++){
-				if(units[i]->m_position.Distance(this->m_position) < minDistance) closestIndex = i;
-				minDistance = units[i]->m_position.Distance(this->m_position);
-			}
-			this->m_target = units[closestIndex];
+            if(units.size()>0){
+			    unsigned int closestIndex = 0;
+			    float minDistance = units[0]->m_position.Distance(this->m_position);
+			    for(unsigned int i = 0; i < units.size(); i++){
+				    if(units[i]->m_position.Distance(this->m_position) < minDistance) closestIndex = i;
+				    minDistance = units[i]->m_position.Distance(this->m_position);
+			    }
+			    this->m_target = units[closestIndex];
+            }
 		}
 
 		this->m_position += this->m_velocity * this->m_speed * deltaTime;
@@ -70,6 +74,16 @@ void Unit::Update(float deltaTime, vector<Unit*> p_flock) {
 
     for(unsigned int i = 0; i < this->m_units.size(); i++){
         this->m_units[i]->Update(deltaTime, this->m_units);
+    }
+
+    this->m_cur_cooldown += deltaTime;
+    if(this->m_cur_cooldown > SHOT_INTERVAL){
+        this->CreateProjectile();
+        this->m_cur_cooldown -= SHOT_INTERVAL;
+    }
+
+    for(unsigned int i = 0; i < this->m_projectiles.size(); i++){
+        this->m_projectiles[i].Update(deltaTime);
     }
 }
 
@@ -144,6 +158,7 @@ void Unit::SetCallbackFunction(IProjectileCallback* p_callback) {
 
 void Unit::CreateProjectile() {
     if(this->m_projCallback){
-        this->m_projCallback->ProjectileCallback();
+        this->m_projectiles.push_back(Projectile(this->m_position, this->m_velocity * 3.f));
+        this->m_projCallback->ProjectileCallback(this->m_projectiles[this->m_projectiles.size()-1]);
     }
 }

@@ -1,7 +1,7 @@
 #include "Application.h"
 
 Application::Application(){
-    device = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(640, 480), 32, false, true);
+    device = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1920, 1080), 32, true, false);
     if (device){
         device->setWindowCaption(L"Boids Demo - 0.1");
 
@@ -34,7 +34,7 @@ void Application::init(){
     scene::ISceneNode* skybox = smgr->addSkyBoxSceneNode(text,text,text,text,text,text);
 }
 
-void Application::ProjectileCallback(){
+void Application::ProjectileCallback(Projectile& proj){
 
 }
 

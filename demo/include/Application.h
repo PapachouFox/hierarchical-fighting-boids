@@ -20,7 +20,7 @@ public:
     bool run();
     void CreateBoids(int number, int numberSubUnit, float size, std::vector<Boid*> &boids, Simulation &sim, Unit* parent, int pr, int pg, int pb);
     void SetCameraTarget(Boid* boid);
-    void ProjectileCallback();
+    void ProjectileCallback(Projectile&);
 private:
     GAME_STATE state;
     void init();
