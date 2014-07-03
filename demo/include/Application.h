@@ -28,4 +28,5 @@ private:
     scene::ISceneManager *smgr;
     video::IVideoDriver* driver;
     gui::IGUIEnvironment* guienv;
+	gui::IGUIFont* font;
 };
